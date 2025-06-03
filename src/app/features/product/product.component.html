@@ -1,6 +1,5 @@
 <div class="product-container">
 
-
   <!-- Encabezado de la Tabla (HeaderTable) -->
   <div class="header-table">
     <div class="header-table-title">
@@ -14,6 +13,17 @@
         <p class="header-table-desc" *ngIf="showAddForm">Completa los datos para crear un nuevo producto financiero</p>
         <p class="header-table-desc" *ngIf="showEditForm">Modificar información del producto seleccionado</p>
       </div>
+    </div>
+    
+    <!-- Botón Cancelar para formularios -->
+    <div class="header-cancel-button" *ngIf="showAddForm || showEditForm">
+      <app-custom-button 
+        [colorBoton]="'#dc3545'"
+        [ColorHoover]="'#c82333'"
+        [colorTexto]="'#fff'"
+        [Texto]="'Cancelar'"
+        (click)="showAddForm ? onHideAddForm() : onHideEditForm()"
+      />
     </div>
   </div>
 

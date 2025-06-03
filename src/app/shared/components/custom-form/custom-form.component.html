@@ -1,14 +1,6 @@
 <div class="container-body" [class.loading]="loading">
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">    
-    <!-- Encabezado -->
-    <div class="form-header">
-      <h1>{{ mode === 'add' ? 'Nuevo Producto Financiero' : 'Editar Producto Financiero' }}</h1>
-    </div>
-
-    <!-- Divisor -->
-    <hr aria-hidden="true">
-
     <!-- Contenido del formulario -->
     <div class="form-content">
 
@@ -76,9 +68,7 @@
           [showError]="!!getError('date_revision')"
           [errorMessage]="getError('date_revision') || ''"
         />
-      </div>
-
-    </div>    
+      </div>    </div>    
     <!-- Botones -->
     <div class="form-buttons">
       <app-custom-button
@@ -97,15 +87,6 @@
         [Texto]="'Reiniciar'"
         [disabled]="loading"
         (click)="onReset()"
-      />
-
-      <app-custom-button 
-        [colorBoton]="'#dc3545'"
-        [ColorHoover]="'#c82333'"
-        [colorTexto]="'#fff'"
-        [Texto]="'Cancelar'"
-        [disabled]="loading"
-        (click)="onCancel()"
       />
     </div>
 
