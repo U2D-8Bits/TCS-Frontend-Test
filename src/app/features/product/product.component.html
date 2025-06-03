@@ -79,6 +79,26 @@
               <th>Acciones</th>
             </tr>
           </thead>
+
+          <tbody>
+            <tr *ngFor="let product of products">
+              <td>
+                <img [src]="product.logo" alt="Logo {{product.name}}" class="logo" *ngIf="product.logo; else noLogo" />
+                <ng-template #noLogo>
+                  <div class="logo" style="background:#e0e0e0; color:#757575; display:flex;align-items:center;justify-content:center;">?</div>
+                </ng-template>
+              </td>
+              <td style="font-weight:600; color:#222;">{{ product.name }}</td>
+              <td style="max-width:260px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ product.description }}</td>
+              <td>{{ product.date_release | date:'yyyy-MM-dd' }}</td>
+              <td>{{ product.date_revision | date:'yyyy-MM-dd' }}</td>
+              <td class="actions">
+                <!-- Placeholder for dropdown actions (edit/delete) -->
+                <span class="material-symbols-outlined" style="cursor:pointer;">more_vert</span>
+              </td>
+            </tr>
+          </tbody>
+
         </table>
         <!-- Seccion Footer de la Tabla -->
         <div class="product-table-footer" *ngIf="products.length > 0">
