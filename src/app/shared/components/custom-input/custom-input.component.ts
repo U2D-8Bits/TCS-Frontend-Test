@@ -21,11 +21,11 @@ export class CustomInputComponent implements OnInit, ControlValueAccessor {
   @Input() label: string = '';
   @Input() errorMessage: string = '';
   @Input() type: string = 'text';
+  @Input() showError: boolean = false;
 
   value: string = '';
   touched = false;
   disabled = false;
-  showError = false;
 
   onChange = (value: any) => {};
   onTouched = () => {};
@@ -51,12 +51,10 @@ export class CustomInputComponent implements OnInit, ControlValueAccessor {
     const input = event.target as HTMLInputElement;
     this.value = input.value;
     this.onChange(this.value);
-    this.showError = false;
   }
 
   handleBlur() {
     this.touched = true;
     this.onTouched();
-    this.showError = !this.value && !!this.errorMessage;
   }
 }
