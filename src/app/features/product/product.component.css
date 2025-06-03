@@ -865,18 +865,6 @@
   box-shadow: 0 6px 12px rgba(255, 214, 0, 0.3);
 }
 
-.product-table-container:has(app-custom-form)::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #1976d2, #42a5f5, #1976d2);
-  border-radius: 12px 12px 0 0;
-  animation: progressBar 2s ease-in-out infinite;
-}
-
 @keyframes progressBar {
   0%, 100% { opacity: 0.6; }
   50% { opacity: 1; }
