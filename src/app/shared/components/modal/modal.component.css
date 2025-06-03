@@ -163,23 +163,23 @@
 }
 
 .modal-btn-confirm {
-  background: linear-gradient(45deg, #007bff, #0056b3);
-  color: white;
+  background-color: #ffdd00;
+  color: #152559;
 }
 
 .modal-btn-confirm:hover {
-  background: linear-gradient(45deg, #0056b3, #004085);
+  background-color: #ffd100;
 }
 
 .modal-btn-cancel {
-  background: #f8f9fa;
-  color: #6c757d;
+  background: #f6f6f6;
+  color: #152559;
   border: 1px solid #dee2e6;
 }
 
 .modal-btn-cancel:hover {
   background: #e9ecef;
-  color: #495057;
+  color: #152559;
 }
 
 /* Animations */
