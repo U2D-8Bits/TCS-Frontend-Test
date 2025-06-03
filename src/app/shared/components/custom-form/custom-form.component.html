@@ -19,10 +19,10 @@
           [placeholder]="'ID del Producto'"
           [type]="'text'"
           formControlName="id"
-          [ngClass]="{'input-error': getError('id')}"
+          [showError]="!!getError('id')"
+          [errorMessage]="getError('id') || ''"
           [disabled]="mode === 'edit'"
         />
-        <div *ngIf="getError('id')" class="error-message">{{ getError('id') }}</div>
       </div>
 
       <div class="form-group">
@@ -31,9 +31,9 @@
           [placeholder]="'Nombre del Producto'"
           [type]="'text'"
           formControlName="name"
-          [ngClass]="{'input-error': getError('name')}"
+          [showError]="!!getError('name')"
+          [errorMessage]="getError('name') || ''"
         />
-        <div *ngIf="getError('name')" class="error-message">{{ getError('name') }}</div>
       </div>
 
       <div class="form-group">
@@ -42,9 +42,9 @@
           [placeholder]="'Descripción del Producto'"
           [type]="'text'"
           formControlName="description"
-          [ngClass]="{'input-error': getError('description')}"
+          [showError]="!!getError('description')"
+          [errorMessage]="getError('description') || ''"
         />
-        <div *ngIf="getError('description')" class="error-message">{{ getError('description') }}</div>
       </div>
 
       <div class="form-group">
@@ -53,9 +53,9 @@
           [placeholder]="'Logo del Producto'"
           [type]="'text'"
           formControlName="logo"
-          [ngClass]="{'input-error': getError('logo')}"
+          [showError]="!!getError('logo')"
+          [errorMessage]="getError('logo') || ''"
         />
-        <div *ngIf="getError('logo')" class="error-message">{{ getError('logo') }}</div>
       </div>
 
       <div class="form-group">
@@ -64,9 +64,9 @@
           [placeholder]="'Fecha de Liberación del Producto'"
           [type]="'date'"
           formControlName="date_release"
-          [ngClass]="{'input-error': getError('date_release')}"
+          [showError]="!!getError('date_release')"
+          [errorMessage]="getError('date_release') || ''"
         />
-        <div *ngIf="getError('date_release')" class="error-message">{{ getError('date_release') }}</div>
       </div>
 
       <div class="form-group">
@@ -75,9 +75,9 @@
           [placeholder]="'Fecha de Revisión del Producto'"
           [type]="'date'"
           formControlName="date_revision"
-          [ngClass]="{'input-error': getError('date_revision')}"
+          [showError]="!!getError('date_revision')"
+          [errorMessage]="getError('date_revision') || ''"
         />
-        <div *ngIf="getError('date_revision')" class="error-message">{{ getError('date_revision') }}</div>
       </div>
 
     </div>

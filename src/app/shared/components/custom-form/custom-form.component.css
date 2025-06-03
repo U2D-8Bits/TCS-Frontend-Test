@@ -72,10 +72,6 @@ hr {
 }
 
 /* Errores visuales para campos (pueden ser usados por custom-input) */
-.input-error {
-  border: 2px solid #e53935 !important;
-}
-
 .error-message {
   color: #e53935;
   font-size: 0.95rem;
