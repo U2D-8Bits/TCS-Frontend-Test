@@ -14,23 +14,14 @@
   <!-- Contenedor de Tabla -->
   <div class="product-table-container">
     <!-- Menu de Acciones -->
-    <div class="product-actions-row" *ngIf="!showAddForm">      <!-- Input de Busqueda de Producto -->
+    <div class="product-actions-row" *ngIf="!showAddForm"> <!-- Input de Busqueda de Producto -->
       <div class="search-input-container">
-        <app-custom-input 
-          type="text" 
-          placeholder="Buscar productos por nombre..." 
-          [(ngModel)]="searchTerm"
+        <app-custom-input type="text" placeholder="Buscar productos por nombre..." [(ngModel)]="searchTerm"
           (ngModelChange)="onSearchTermChange($event)">
         </app-custom-input>
         <!-- Botón para limpiar búsqueda -->
-        <app-custom-button 
-          *ngIf="searchTerm" 
-          [Texto]="'Limpiar'" 
-          [colorBoton]="'#6c757d'" 
-          [ColorHoover]="'#5a6268'" 
-          [colorTexto]="'#fff'"
-          (click)="clearSearch()"
-          style="margin-left: 8px;">
+        <app-custom-button *ngIf="searchTerm" [Texto]="'Limpiar'" [colorBoton]="'#6c757d'" [ColorHoover]="'#5a6268'"
+          [colorTexto]="'#fff'" (click)="clearSearch()" style="margin-left: 8px;">
         </app-custom-button>
       </div>
       <!-- Botón Agregar -->
@@ -45,19 +36,20 @@
     <div class="product-table-content" (click)="closeDropdown()">
       <!-- Formulario de agregar producto -->
       <app-custom-form *ngIf="showAddForm" [mode]="'add'" (formSubmit)="onAddProduct($event)"
-        (formCancel)="onHideAddForm()"></app-custom-form>      <ng-container *ngIf="!showAddForm">
+        (formCancel)="onHideAddForm()"></app-custom-form> <ng-container *ngIf="!showAddForm">
         <!-- Vista vacía si no hay productos -->
         <div *ngIf="products.length === 0 && !searchTerm" class="empty-products-view">
           <div class="empty-icon">📦</div>
           <div class="empty-title">No hay productos registrados</div>
           <div class="empty-desc">Agrega un producto financiero para comenzar.</div>
         </div>
-        
+
         <!-- Vista de búsqueda sin resultados -->
         <div *ngIf="products.length === 0 && searchTerm" class="empty-products-view">
           <div class="empty-icon">🔍</div>
           <div class="empty-title">No se encontraron productos</div>
-          <div class="empty-desc">No hay productos que coincidan con "{{ searchTerm }}". Intenta con otro término de búsqueda.</div>
+          <div class="empty-desc">No hay productos que coincidan con "{{ searchTerm }}". Intenta con otro término de
+            búsqueda.</div>
         </div>
         <!-- Tabla -->
         <table *ngIf="products.length > 0">
@@ -104,9 +96,8 @@
                   <span class="material-symbols-outlined actions-trigger" (click)="toggleDropdown(product.id, $event)">
                     more_vert
                   </span>
-                  <div class="dropdown-menu" *ngIf="openDropdownId === product.id" 
-                       [style.top]="dropdownPosition.top" 
-                       [style.left]="dropdownPosition.left">
+                  <div class="dropdown-menu" *ngIf="openDropdownId === product.id" [style.top]="dropdownPosition.top"
+                    [style.left]="dropdownPosition.left">
                     <div class="dropdown-item" (click)="onEditProduct(product, $event)">
                       <span class="material-symbols-outlined">edit</span>
                       Editar
@@ -121,12 +112,13 @@
             </tr>
           </tbody>
 
-        </table>        <!-- Seccion Footer de la Tabla -->
+        </table> <!-- Seccion Footer de la Tabla -->
         <div class="product-table-footer" *ngIf="products.length > 0">
           <!-- Contador de productos en Tabla -->
           <div>
             <span *ngIf="!searchTerm">{{products.length}} Resultados</span>
-            <span *ngIf="searchTerm">{{products.length}} de {{allProducts.length}} resultados para "{{searchTerm}}"</span>
+            <span *ngIf="searchTerm">{{products.length}} de {{allProducts.length}} resultados para
+              "{{searchTerm}}"</span>
           </div>
           <!-- Select para escoger la cantidad de productos a mostrar (5, 10, 20) -->
           <div>
