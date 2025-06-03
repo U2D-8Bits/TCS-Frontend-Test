@@ -19,8 +19,11 @@ import { ModalService } from '../../shared/services/modal.service';
     CustomFormComponent
   ]
 })
-export class ProductComponent implements OnInit {  products: Product[] = [];
+export class ProductComponent implements OnInit {  
+  products: Product[] = [];
   showAddForm = false;
+  // Controla qué menú de acciones está abierto
+  openDropdownId: string | null = null;
 
   private productService = inject(ProductService);
   public modalService = inject(ModalService); // Hacer público para el template
@@ -126,5 +129,32 @@ export class ProductComponent implements OnInit {  products: Product[] = [];
     this.showAddForm = false;
     this.modalService.success('¡Producto agregado!', 'El producto ha sido creado exitosamente.');
     this.getProducts();
+  }
+
+  // Alternar menú desplegable de acciones
+  toggleDropdown(productId: string, event: Event) {
+    event.stopPropagation();
+    this.openDropdownId = this.openDropdownId === productId ? null : productId;
+  }
+
+  // Cerrar menú desplegable
+  closeDropdown() {
+    this.openDropdownId = null;
+  }
+
+  // Editar producto
+  onEditProduct(product: Product, event: Event) {
+    event.stopPropagation();
+    this.closeDropdown();
+    // TODO: Implementar navegación a formulario de edición
+    console.log('Editar producto:', product);
+    this.modalService.info('Función en desarrollo', 'La edición de productos estará disponible pronto.');
+  }
+
+  // Eliminar producto
+  onDeleteProduct(product: Product, event: Event) {
+    event.stopPropagation();
+    this.closeDropdown();
+    this.deleteProductWithConfirmation(product);
   }
 }
