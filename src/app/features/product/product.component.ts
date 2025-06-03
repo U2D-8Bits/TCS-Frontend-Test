@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CustomButtonComponent } from '../../shared/components/custom-button/custom-button.component';
 import { CustomInputComponent } from '../../shared/components/custom-input/custom-input.component';
 import { CustomFormComponent } from '../../shared/components/custom-form/custom-form.component';
@@ -29,6 +30,8 @@ export class ProductComponent implements OnInit, OnDestroy {
   filteredProducts: Product[] = [];
   displayedProducts: Product[] = [];
   showAddForm = false;
+  showEditForm = false;
+  editingProduct: Product | null = null;
   searchTerm = '';
   openDropdownId: string | null = null;
   dropdownPosition = { top: '0px', left: '0px' };
@@ -41,11 +44,13 @@ export class ProductComponent implements OnInit, OnDestroy {
   private searchSubject = new Subject<string>();
 
   private productService = inject(ProductService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   public modalService = inject(ModalService);
-
   ngOnInit() {
     this.getProducts();
     this.setupSearchSubscription();
+    this.checkRouteForEdit();
   }
   ngOnDestroy() {
     this.destroy$.next();
@@ -118,19 +123,20 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   onShowAddForm() {
+    this.showEditForm = false;
+    this.editingProduct = null;
+    this.router.navigate(['/products']);
     this.showAddForm = true;
   }
-
   onHideAddForm() {
-    this.showAddForm = false;
-  }
-  onAddProduct(product: Product) {
-    this.showAddForm = false;
+    this.navigateToProductList();
+  }  onAddProduct(product: Product) {
     this.modalService.success(
       '¡Producto agregado!',
       'El producto ha sido creado exitosamente.'
     );
     this.getProducts();
+    this.navigateToProductList();
   }
 
   toggleDropdown(productId: string, event: Event) {
@@ -154,14 +160,10 @@ export class ProductComponent implements OnInit, OnDestroy {
   closeDropdown() {
     this.openDropdownId = null;
   }
-
   onEditProduct(product: Product, event: Event) {
     event.stopPropagation();
     this.closeDropdown();
-    this.modalService.info(
-      'Función en desarrollo',
-      'La edición de productos estará disponible pronto.'
-    );
+    this.router.navigate(['/products', product.id]);
   }
 
   onDeleteProduct(product: Product, event: Event) {
@@ -203,7 +205,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   onItemsPerPageChange(event: Event) {
     const target = event.target as HTMLSelectElement;
     this.itemsPerPage = parseInt(target.value, 10);
-    this.currentPage = 1; // Reset to first page
+    this.currentPage = 1;
     this.updateDisplayedProducts();
   }
 
@@ -237,12 +239,74 @@ export class ProductComponent implements OnInit, OnDestroy {
   goToNextPage() {
     this.goToPage(this.currentPage + 1);
   }
-
   getPageNumbers(): number[] {
     const pages: number[] = [];
     for (let i = 1; i <= this.totalPages; i++) {
       pages.push(i);
     }
     return pages;
+  }
+
+  checkRouteForEdit() {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      const productId = params['id'];
+      if (productId) {
+        this.loadProductForEdit(productId);
+      } else {
+        this.showEditForm = false;
+        this.editingProduct = null;
+      }
+    });
+  }
+
+  loadProductForEdit(productId: string) {
+    const existingProduct = this.allProducts.find(p => p.id === productId);
+    if (existingProduct) {
+      this.editingProduct = existingProduct;
+      this.showEditForm = true;
+      this.showAddForm = false;
+      return;
+    }
+
+    this.modalService.loading('Cargando producto...', 'Por favor espere');
+    
+    this.productService.getProductById(productId).subscribe({
+      next: (product: Product) => {
+        this.modalService.close();
+        this.editingProduct = product;
+        this.showEditForm = true;
+        this.showAddForm = false;
+      },
+      error: (error) => {
+        this.modalService.close();
+        this.modalService.error(
+          'Error al cargar producto',
+          'No se pudo encontrar el producto solicitado.'
+        );
+        this.router.navigate(['/products']);
+      }
+    });
+  }
+
+  onShowEditForm(product: Product) {
+    this.router.navigate(['/products', product.id]);
+  }
+  onHideEditForm() {
+    this.navigateToProductList();
+  }
+  onEditProductSubmit(product: Product) {
+    this.modalService.success(
+      '¡Producto actualizado!',
+      'El producto ha sido actualizado exitosamente.'
+    );
+    this.getProducts();
+    this.navigateToProductList();
+  }
+
+  navigateToProductList() {
+    this.showAddForm = false;
+    this.showEditForm = false;
+    this.editingProduct = null;
+    this.router.navigate(['/products']);
   }
 }
