@@ -37,8 +37,14 @@
 
     <!-- Tabla de productos -->
     <div class="product-table-content">
+      <!-- Vista vacía si no hay productos -->
+      <div *ngIf="products.length === 0" class="empty-products-view">
+        <div class="empty-icon">📦</div>
+        <div class="empty-title">No hay productos registrados</div>
+        <div class="empty-desc">Agrega un producto financiero para comenzar.</div>
+      </div>
       <!-- Tabla -->
-      <table>
+      <table *ngIf="products.length > 0">
         <thead>
           <tr>
             <th>Logo</th>
@@ -65,9 +71,8 @@
           </tr>
         </thead>
       </table>
-
       <!-- Seccion Footer de la Tabla -->
-      <div class="product-table-footer">
+      <div class="product-table-footer" *ngIf="products.length > 0">
         <!-- Contador de productos en Tabla -->
         <div>
           <span>{{products.length}} Resultados</span>

@@ -1,4 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { CustomButtonComponent } from '../../shared/components/custom-button/custom-button.component';
 import { CustomInputComponent } from '../../shared/components/custom-input/custom-input.component';
 import { Product } from '../../core/models/product.model';
@@ -11,7 +12,8 @@ import { ProductService } from '../../core/services/product.service';
   standalone: true,
   imports: [
     CustomButtonComponent,
-    CustomInputComponent
+    CustomInputComponent,
+    CommonModule
   ]
 })
 export class ProductComponent implements OnInit {
