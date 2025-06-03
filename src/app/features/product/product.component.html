@@ -14,9 +14,25 @@
     <!-- Menu de Acciones -->
     <div class="product-actions-row">
       <!-- Input de Busqueda de Producto -->
-      <div>
-        <app-custom-input type="text" placeholder="Buscar..." />
+      <div style="flex:1; max-width:320px;">
+        <app-custom-input 
+          type="text" 
+          placeholder="Buscar..." 
+          style="width:100%">
+        </app-custom-input>
       </div>
+
+      <!-- Boton de Agregar Producto -->
+      <div>
+        <app-custom-button 
+          [Texto]="'Agregar'" 
+          [colorBoton]="'#FFD600'"
+          [ColorHoover]="'#FFEA00'" 
+          [colorTexto]="'#222'" 
+          style="font-weight:600; min-width:120px;">
+        </app-custom-button>
+      </div>
+
     </div>
 
     <!-- Tabla de productos -->
@@ -54,10 +70,16 @@
       <div class="product-table-footer">
         <!-- Contador de productos en Tabla -->
         <div>
-          <span>Productos.length</span>
+          <span>{{products.length}} Resultados</span>
         </div>
         <!-- Select para escoger la cantidad de productos a mostrar (5, 10, 20) -->
-        <div></div>
+        <div>
+          <select class="custom-select">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+          </select>
+        </div>
       </div>
     </div>
   </div>
