@@ -322,6 +322,22 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
+.product-table-content .logo.logo-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #e0e0e0;
+  color: #333;
+  font-weight: bold;
+  font-size: 1.1rem;
+  border-radius: 50%;
+  text-transform: uppercase;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.07);
+  margin: 0 auto;
+}
+
 .product-table-content th:first-child,
 .product-table-content td:first-child {
   width: 60px;
