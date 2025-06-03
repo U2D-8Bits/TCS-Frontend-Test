@@ -78,22 +78,21 @@
               </td>
               <td class="product-name">{{ product.name }}</td>
               <td class="product-description">{{ product.description }}</td>
-              <td>{{ product.date_release | date:'dd-MM-yyyy' }}</td>              <td>{{ product.date_revision | date:'dd-MM-yyyy' }}</td>
+              <td>{{ product.date_release | date:'dd-MM-yyyy' }}</td>
+              <td>{{ product.date_revision | date:'dd-MM-yyyy' }}</td>
               <td class="actions">
                 <div class="actions-dropdown">
-                  <span class="material-symbols-outlined actions-trigger" 
-                        (click)="toggleDropdown(product.id, $event)">
+                  <span class="material-symbols-outlined actions-trigger" (click)="toggleDropdown(product.id, $event)">
                     more_vert
                   </span>
-                  <div class="dropdown-menu" 
-                       *ngIf="openDropdownId === product.id">
-                    <div class="dropdown-item" 
-                         (click)="onEditProduct(product, $event)">
+                  <div class="dropdown-menu" *ngIf="openDropdownId === product.id" 
+                       [style.top]="dropdownPosition.top" 
+                       [style.left]="dropdownPosition.left">
+                    <div class="dropdown-item" (click)="onEditProduct(product, $event)">
                       <span class="material-symbols-outlined">edit</span>
                       Editar
                     </div>
-                    <div class="dropdown-item" 
-                         (click)="onDeleteProduct(product, $event)">
+                    <div class="dropdown-item" (click)="onDeleteProduct(product, $event)">
                       <span class="material-symbols-outlined">delete</span>
                       Eliminar
                     </div>

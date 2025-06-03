@@ -24,6 +24,7 @@ export class ProductComponent implements OnInit {
   showAddForm = false;
   // Controla qué menú de acciones está abierto
   openDropdownId: string | null = null;
+  dropdownPosition = { top: '0px', left: '0px' };
 
   private productService = inject(ProductService);
   public modalService = inject(ModalService); // Hacer público para el template
@@ -130,11 +131,25 @@ export class ProductComponent implements OnInit {
     this.modalService.success('¡Producto agregado!', 'El producto ha sido creado exitosamente.');
     this.getProducts();
   }
-
   // Alternar menú desplegable de acciones
   toggleDropdown(productId: string, event: Event) {
     event.stopPropagation();
-    this.openDropdownId = this.openDropdownId === productId ? null : productId;
+    
+    if (this.openDropdownId === productId) {
+      this.openDropdownId = null;
+      return;
+    }
+    
+    // Calcular posición del dropdown
+    const target = event.target as HTMLElement;
+    const rect = target.getBoundingClientRect();
+    
+    this.dropdownPosition = {
+      top: `${rect.bottom + window.scrollY}px`,
+      left: `${rect.right - 140 + window.scrollX}px` // 140px es el ancho mínimo del dropdown
+    };
+    
+    this.openDropdownId = productId;
   }
 
   // Cerrar menú desplegable
