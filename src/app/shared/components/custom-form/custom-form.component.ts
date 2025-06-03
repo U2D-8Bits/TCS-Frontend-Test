@@ -1,3 +1,4 @@
+// Importaciones de Angular y dependencias
 import {
   Component,
   OnInit,
@@ -14,13 +15,15 @@ import {
   ValidationErrors,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+// Librerías externas
+import { Observable, of } from 'rxjs';
+import { map, first } from 'rxjs/operators';
+// Componentes y servicios personalizados
 import { CustomButtonComponent } from '../custom-button/custom-button.component';
 import { CustomInputComponent } from '../custom-input/custom-input.component';
 import { ProductService } from '../../../core/services/product.service';
 import { Product } from '../../../core/models/product.model';
-import { Observable, of } from 'rxjs';
-import { map, first } from 'rxjs/operators';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-custom-form',
@@ -35,19 +38,23 @@ import { CommonModule } from '@angular/common';
   ],
 })
 export class CustomFormComponent implements OnInit {
+  // ================= Propiedades de Inputs/Outputs =================
   @Input() mode: 'add' | 'edit' = 'add';
   @Input() initialData: Product | null = null;
   @Output() formSubmit = new EventEmitter<Product>();
   @Output() formCancel = new EventEmitter<void>();
 
+  // ================= Propiedades públicas =================
   form: FormGroup;
   loading = false;
   errorMsg = '';
   idExists = false;
 
+  // ================= Propiedades privadas =================
   private fb = inject(FormBuilder);
   private productService = inject(ProductService);
 
+  // ================= Constructor =================
   constructor() {
     this.form = this.fb.group({
       id: [
@@ -83,6 +90,8 @@ export class CustomFormComponent implements OnInit {
       ],
     });
   }
+
+  // ================= Métodos de ciclo de vida =================
   ngOnInit() {
     if (this.mode === 'edit' && this.initialData) {
       this.form.patchValue({
@@ -91,50 +100,13 @@ export class CustomFormComponent implements OnInit {
       this.form.get('id')?.disable();
     }
   }
-  idUniqueValidator(
-    control: AbstractControl
-  ): Observable<ValidationErrors | null> {
-    if (this.mode === 'edit' || !control.value || control.value.length < 3) {
-      return of(null);
-    }
 
-    return this.productService.verifyProductId(control.value).pipe(
-      map((exists) => (exists ? { idExists: true } : null)),
-      first()
-    );
-  }
-  releaseDateValidator(control: AbstractControl): ValidationErrors | null {
-    if (!control.value) return null;
-    const today = new Date();
-    const inputDate = new Date(control.value);
-    today.setHours(0, 0, 0, 0);
-    inputDate.setHours(0, 0, 0, 0);
-    return inputDate >= today ? null : { releaseDateInvalid: true };
-  }
-
-  reviewDateValidator(control: AbstractControl): ValidationErrors | null {
-    if (!control.value || !this.form) return null;
-    const releaseDate = this.form.get('date_release')?.value;
-    if (!releaseDate) return null;
-    const release = new Date(releaseDate);
-    const review = new Date(control.value);
-    const expected = new Date(release);
-    expected.setFullYear(expected.getFullYear() + 1);
-
-    release.setHours(0, 0, 0, 0);
-    review.setHours(0, 0, 0, 0);
-    expected.setHours(0, 0, 0, 0);
-
-    return review.getTime() === expected.getTime()
-      ? null
-      : { reviewDateInvalid: true };
-  }
+  // ================= Métodos públicos =================
   onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
-
     this.loading = true;
     this.errorMsg = '';
     const formValue = this.form.getRawValue();
@@ -146,7 +118,6 @@ export class CustomFormComponent implements OnInit {
       date_release: formValue.date_release,
       date_revision: formValue.date_revision,
     };
-
     if (this.mode === 'add') {
       this.productService.verifyProductId(product.id).subscribe({
         next: (exists) => {
@@ -168,33 +139,6 @@ export class CustomFormComponent implements OnInit {
     }
   }
 
-  private performSubmit(product: Product) {
-    let obs: Observable<any>;
-    if (this.mode === 'add') {
-      obs = this.productService.addProduct(product);
-    } else {
-      obs = this.productService.updateProduct(product.id, product);
-    }
-    obs.subscribe({
-      next: (response) => {
-        this.loading = false;
-        this.formSubmit.emit(product);
-        this.form.reset();
-      },
-      error: (err) => {
-        this.loading = false;
-        console.error('Error al guardar producto:', err);
-        if (err.error?.message?.includes('Duplicate identifier')) {
-          this.errorMsg = 'El ID ya existe. Por favor, use un ID diferente.';
-          this.form.get('id')?.setErrors({ idExists: true });
-        } else if (err.error?.message) {
-          this.errorMsg = err.error.message;
-        } else {
-          this.errorMsg = 'Ocurrió un error al guardar.';
-        }
-      },
-    });
-  }
   onReset() {
     if (this.mode === 'edit' && this.initialData) {
       this.form.patchValue({
@@ -226,5 +170,71 @@ export class CustomFormComponent implements OnInit {
     if (control.errors?.['reviewDateInvalid'])
       return 'Debe ser exactamente un año después de la liberación';
     return null;
+  }
+
+  // ================= Métodos privados/Helpers =================
+  private idUniqueValidator(
+    control: AbstractControl
+  ): Observable<ValidationErrors | null> {
+    if (this.mode === 'edit' || !control.value || control.value.length < 3) {
+      return of(null);
+    }
+    return this.productService.verifyProductId(control.value).pipe(
+      map((exists) => (exists ? { idExists: true } : null)),
+      first()
+    );
+  }
+
+  private releaseDateValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) return null;
+    const today = new Date();
+    const inputDate = new Date(control.value);
+    today.setHours(0, 0, 0, 0);
+    inputDate.setHours(0, 0, 0, 0);
+    return inputDate >= today ? null : { releaseDateInvalid: true };
+  }
+
+  private reviewDateValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value || !this.form) return null;
+    const releaseDate = this.form.get('date_release')?.value;
+    if (!releaseDate) return null;
+    const release = new Date(releaseDate);
+    const review = new Date(control.value);
+    const expected = new Date(release);
+    expected.setFullYear(expected.getFullYear() + 1);
+    release.setHours(0, 0, 0, 0);
+    review.setHours(0, 0, 0, 0);
+    expected.setHours(0, 0, 0, 0);
+    return review.getTime() === expected.getTime()
+      ? null
+      : { reviewDateInvalid: true };
+  }
+
+  private performSubmit(product: Product) {
+    let obs: Observable<any>;
+    if (this.mode === 'add') {
+      obs = this.productService.addProduct(product);
+    } else {
+      obs = this.productService.updateProduct(product.id, product);
+    }
+    obs.subscribe({
+      next: () => {
+        this.loading = false;
+        this.formSubmit.emit(product);
+        this.form.reset();
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error('Error al guardar producto:', err);
+        if (err.error?.message?.includes('Duplicate identifier')) {
+          this.errorMsg = 'El ID ya existe. Por favor, use un ID diferente.';
+          this.form.get('id')?.setErrors({ idExists: true });
+        } else if (err.error?.message) {
+          this.errorMsg = err.error.message;
+        } else {
+          this.errorMsg = 'Ocurrió un error al guardar.';
+        }
+      },
+    });
   }
 }

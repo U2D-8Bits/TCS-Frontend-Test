@@ -1,3 +1,4 @@
+// Importaciones de Angular y dependencias
 import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
@@ -8,6 +9,7 @@ import { Component, OnInit, Input } from '@angular/core';
   imports: []
 })
 export class CustomButtonComponent implements OnInit {
+  // ================= Inputs =================
   @Input() colorTexto: string = '#0F265C'; // acepta hex
   @Input() colorBoton: string = '#FFDD00'; // acepta hex
   @Input() Texto: string = 'Botón';
@@ -15,8 +17,10 @@ export class CustomButtonComponent implements OnInit {
   @Input() disabled: boolean = false;
   @Input() type: 'button' | 'submit' | 'reset' = 'button'; // Tipo de botón
 
+  // ================= Propiedades públicas =================
   hover = false;
 
+  // ================= Métodos públicos =================
   get backgroundColor() {
     // Si el valor es hexadecimal válido, úsalo, si no, fallback
     const isHex = (v: string) => /^#([A-Fa-f0-9]{3}){1,2}$/.test(v);
@@ -30,9 +34,7 @@ export class CustomButtonComponent implements OnInit {
     return isHex(this.colorTexto) ? this.colorTexto : '#0F265C';
   }
 
+  // ================= Constructor y ciclo de vida =================
   constructor() { }
-
-  ngOnInit() {
-  }
-
+  ngOnInit() { }
 }

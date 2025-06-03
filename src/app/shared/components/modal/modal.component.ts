@@ -1,6 +1,8 @@
+// Importaciones de Angular y dependencias
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
+// Servicios personalizados
 import { ModalService, ModalConfig } from '../../services/modal.service';
 
 @Component({
@@ -11,12 +13,17 @@ import { ModalService, ModalConfig } from '../../services/modal.service';
   imports: [CommonModule]
 })
 export class ModalComponent implements OnInit, OnDestroy {
+  // ================= Propiedades públicas =================
   modalConfig: ModalConfig | null = null;
   isVisible = false;
+
+  // ================= Propiedades privadas =================
   private subscription!: Subscription;
 
+  // ================= Constructor =================
   constructor(private modalService: ModalService) { }
 
+  // ================= Métodos de ciclo de vida =================
   ngOnInit() {
     this.subscription = this.modalService.getModalConfig().subscribe(config => {
       this.modalConfig = config;
@@ -30,6 +37,7 @@ export class ModalComponent implements OnInit, OnDestroy {
     }
   }
 
+  // ================= Métodos públicos =================
   onConfirm() {
     this.modalService.confirm();
   }

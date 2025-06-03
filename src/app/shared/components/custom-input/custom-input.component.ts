@@ -1,3 +1,4 @@
+// Importaciones de Angular y dependencias
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgIf, NgClass } from '@angular/common';
@@ -17,23 +18,27 @@ import { NgIf, NgClass } from '@angular/common';
   ]
 })
 export class CustomInputComponent implements OnInit, ControlValueAccessor {
+  // ================= Inputs =================
   @Input() placeholder: string = '';
   @Input() label: string = '';
   @Input() errorMessage: string = '';
   @Input() type: string = 'text';
   @Input() showError: boolean = false;
 
+  // ================= Propiedades públicas =================
   value: string = '';
   touched = false;
   disabled = false;
 
+  // ================= Métodos para ControlValueAccessor =================
   onChange = (value: any) => {};
   onTouched = () => {};
 
+  // ================= Constructor y ciclo de vida =================
   constructor() { }
-
   ngOnInit() {}
 
+  // ================= Métodos públicos =================
   writeValue(value: any): void {
     this.value = value;
   }
