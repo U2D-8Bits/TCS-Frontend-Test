@@ -55,6 +55,9 @@ export class ProductComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
+  // IDs de productos cuya imagen falló
+  imageErrorIds = new Set<string>();
+
   // ================= Métodos de Ciclo de Vida =================
   ngOnInit() {
     this.getProducts();
@@ -321,5 +324,20 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.showEditForm = false;
     this.editingProduct = null;
     this.router.navigate(['/products']);
+  }
+
+  // Devuelve las iniciales del nombre del producto
+  getInitials(name: string): string {
+    if (!name) return '?';
+    const words = name.trim().split(/\s+/);
+    if (words.length === 1) {
+      return words[0].substring(0, 2).toUpperCase();
+    }
+    return (words[0][0] + words[1][0]).toUpperCase();
+  }
+
+  // Marca el producto como imagen fallida
+  onImageError(productId: string) {
+    this.imageErrorIds.add(productId);
   }
 }

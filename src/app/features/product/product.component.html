@@ -109,9 +109,12 @@
           <tbody>
             <tr *ngFor="let product of displayedProducts">
               <td>
-                <img [src]="product.logo" alt="Logo {{product.name}}" class="logo" *ngIf="product.logo; else noLogo" />
-                <ng-template #noLogo>
-                  <div class="logo logo-fallback">?</div>
+                <ng-container *ngIf="product.logo && !imageErrorIds.has(product.id); else showInitials">
+                  <img [src]="product.logo" alt="Logo {{product.name}}" class="logo"
+                       (error)="onImageError(product.id)" />
+                </ng-container>
+                <ng-template #showInitials>
+                  <div class="logo logo-fallback">{{ getInitials(product.name) }}</div>
                 </ng-template>
               </td>
               <td class="product-name">{{ product.name }}</td>
