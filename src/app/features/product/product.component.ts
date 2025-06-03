@@ -62,28 +62,15 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.allProducts = products;
         this.filteredProducts = products;
         this.updateDisplayedProducts();
-        console.log('Products fetched successfully:', this.allProducts);
         this.modalService.close();
         this.modalService.toast('Productos cargados exitosamente', 'success');
       },
       error: (error) => {
-        console.error('Error fetching products:', error);
         this.modalService.close();
         this.modalService.error(
           'Error al cargar productos',
           'No se pudieron cargar los productos. Por favor intente nuevamente.'
         );
-      },
-    });
-  }
-
-  getProductById(id: string) {
-    this.productService.getProductById(id).subscribe({
-      next: (product) => {
-        console.log('Producto encontrado:', product);
-      },
-      error: (error) => {
-        console.error('Error al buscar producto:', error);
       },
     });
   }
@@ -106,7 +93,6 @@ export class ProductComponent implements OnInit, OnDestroy {
 
         this.productService.deleteProduct(product.id).subscribe({
           next: (res) => {
-            console.log('Producto eliminado:', res);
             this.modalService.close();
             this.modalService.success(
               '¡Eliminado!',
@@ -115,7 +101,6 @@ export class ProductComponent implements OnInit, OnDestroy {
             this.getProducts();
           },
           error: (error) => {
-            console.error('Error al eliminar producto:', error);
             this.modalService.close();
             this.modalService.error(
               'Error',
@@ -125,7 +110,6 @@ export class ProductComponent implements OnInit, OnDestroy {
         });
       }
     } catch (error) {
-      console.error('Error en modal:', error);
     }
   }
 
@@ -174,7 +158,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   onEditProduct(product: Product, event: Event) {
     event.stopPropagation();
     this.closeDropdown();
-    console.log('Editar producto:', product);
     this.modalService.info(
       'Función en desarrollo',
       'La edición de productos estará disponible pronto.'
@@ -205,10 +188,6 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     this.currentPage = 1;
     this.updateDisplayedProducts();
-
-    console.log(
-      `Búsqueda realizada para: "${term}", encontrados: ${this.filteredProducts.length} productos`
-    );
   }
 
   onSearchTermChange(term: string) {
