@@ -63,10 +63,10 @@
           [label]="'Fecha Liberación'"
           [placeholder]="'Fecha de Liberación del Producto'"
           [type]="'date'"
-          formControlName="releaseDate"
-          [ngClass]="{'input-error': getError('releaseDate')}"
+          formControlName="date_release"
+          [ngClass]="{'input-error': getError('date_release')}"
         />
-        <div *ngIf="getError('releaseDate')" class="error-message">{{ getError('releaseDate') }}</div>
+        <div *ngIf="getError('date_release')" class="error-message">{{ getError('date_release') }}</div>
       </div>
 
       <div class="form-group">
@@ -74,10 +74,10 @@
           [label]="'Fecha de Revisión'"
           [placeholder]="'Fecha de Revisión del Producto'"
           [type]="'date'"
-          formControlName="reviewDate"
-          [ngClass]="{'input-error': getError('reviewDate')}"
+          formControlName="date_revision"
+          [ngClass]="{'input-error': getError('date_revision')}"
         />
-        <div *ngIf="getError('reviewDate')" class="error-message">{{ getError('reviewDate') }}</div>
+        <div *ngIf="getError('date_revision')" class="error-message">{{ getError('date_revision') }}</div>
       </div>
 
     </div>

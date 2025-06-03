@@ -40,17 +40,15 @@ export class CustomFormComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
       description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(200)]],
       logo: ['', [Validators.required]],
-      releaseDate: ['', [Validators.required, this.releaseDateValidator]],
-      reviewDate: ['', [Validators.required, this.reviewDateValidator.bind(this)]]
+      date_release: ['', [Validators.required, this.releaseDateValidator]],
+      date_revision: ['', [Validators.required, this.reviewDateValidator.bind(this)]]
     });
   }
 
   ngOnInit() {
     if (this.mode === 'edit' && this.initialData) {
       this.form.patchValue({
-        ...this.initialData,
-        releaseDate: this.initialData.date_release,
-        reviewDate: this.initialData.date_revision
+        ...this.initialData
       });
       this.form.get('id')?.disable();
     }
@@ -75,7 +73,7 @@ export class CustomFormComponent implements OnInit {
 
   reviewDateValidator(control: AbstractControl): ValidationErrors | null {
     if (!control.value || !this.form) return null;
-    const releaseDate = this.form.get('releaseDate')?.value;
+    const releaseDate = this.form.get('date_release')?.value;
     if (!releaseDate) return null;
     const release = new Date(releaseDate);
     const review = new Date(control.value);
@@ -92,9 +90,7 @@ export class CustomFormComponent implements OnInit {
     this.loading = true;
     const product: Product = {
       ...this.form.getRawValue(),
-      id: this.form.get('id')?.value || this.initialData?.id,
-      date_release: this.form.get('releaseDate')?.value,
-      date_revision: this.form.get('reviewDate')?.value
+      id: this.form.get('id')?.value || this.initialData?.id
     };
     let obs: Observable<any>;
     if (this.mode === 'add') {
