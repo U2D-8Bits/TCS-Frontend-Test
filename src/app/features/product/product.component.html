@@ -12,7 +12,7 @@
   <!-- Contenedor de Tabla -->
   <div class="product-table-container">
     <!-- Menu de Acciones -->
-    <div class="product-actions-row">
+    <div class="product-actions-row" *ngIf="!showAddForm">
       <!-- Input de Busqueda de Producto -->
       <div style="flex:1; max-width:320px;">
         <app-custom-input 
@@ -34,10 +34,9 @@
         >
         </app-custom-button>
       </div>
-
     </div>
 
-    <!-- Tabla de productos -->
+    <!-- Tabla de productos o formulario -->
     <div class="product-table-content">
       <!-- Formulario de agregar producto -->
       <app-custom-form
@@ -46,55 +45,57 @@
         (formSubmit)="onAddProduct($event)"
         (formCancel)="onHideAddForm()"
       ></app-custom-form>
-      <!-- Vista vacía si no hay productos -->
-      <div *ngIf="products.length === 0" class="empty-products-view">
-        <div class="empty-icon">📦</div>
-        <div class="empty-title">No hay productos registrados</div>
-        <div class="empty-desc">Agrega un producto financiero para comenzar.</div>
-      </div>
-      <!-- Tabla -->
-      <table *ngIf="products.length > 0">
-        <thead>
-          <tr>
-            <th>Logo</th>
-            <th>Nombre del Producto</th>
-            <th>
-              Descripción
-              <span class="material-symbols-outlined">
-                info
-              </span>
-            </th>
-            <th>
-              Fecha de liberación
-              <span class="material-symbols-outlined">
-                info
-              </span>
-            </th>
-            <th>
-              Fecha de reestructuración
-              <span class="material-symbols-outlined">
-                info
-              </span>
-            </th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-      </table>
-      <!-- Seccion Footer de la Tabla -->
-      <div class="product-table-footer" *ngIf="products.length > 0">
-        <!-- Contador de productos en Tabla -->
-        <div>
-          <span>{{products.length}} Resultados</span>
+      <ng-container *ngIf="!showAddForm">
+        <!-- Vista vacía si no hay productos -->
+        <div *ngIf="products.length === 0" class="empty-products-view">
+          <div class="empty-icon">📦</div>
+          <div class="empty-title">No hay productos registrados</div>
+          <div class="empty-desc">Agrega un producto financiero para comenzar.</div>
         </div>
-        <!-- Select para escoger la cantidad de productos a mostrar (5, 10, 20) -->
-        <div>
-          <select class="custom-select">
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-          </select>
+        <!-- Tabla -->
+        <table *ngIf="products.length > 0">
+          <thead>
+            <tr>
+              <th>Logo</th>
+              <th>Nombre del Producto</th>
+              <th>
+                Descripción
+                <span class="material-symbols-outlined">
+                  info
+                </span>
+              </th>
+              <th>
+                Fecha de liberación
+                <span class="material-symbols-outlined">
+                  info
+                </span>
+              </th>
+              <th>
+                Fecha de reestructuración
+                <span class="material-symbols-outlined">
+                  info
+                </span>
+              </th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+        </table>
+        <!-- Seccion Footer de la Tabla -->
+        <div class="product-table-footer" *ngIf="products.length > 0">
+          <!-- Contador de productos en Tabla -->
+          <div>
+            <span>{{products.length}} Resultados</span>
+          </div>
+          <!-- Select para escoger la cantidad de productos a mostrar (5, 10, 20) -->
+          <div>
+            <select class="custom-select">
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+            </select>
+          </div>
         </div>
-      </div>
+      </ng-container>
     </div>
   </div>
 </div>
