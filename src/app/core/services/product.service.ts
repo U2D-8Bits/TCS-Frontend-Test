@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Product } from '../models/product.model';
@@ -10,6 +10,11 @@ import { environment } from '../../../environments';
 })
 export class ProductService {
   private apiUrl = environment.apiBaseUrl;
+  private httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  };
 
   constructor(private http: HttpClient) { }
 
@@ -28,11 +33,11 @@ export class ProductService {
   }
 
   addProduct(product: Product): Observable<any> {
-    return this.http.post(this.apiUrl, product);
+    return this.http.post(this.apiUrl, product, this.httpOptions);
   }
 
   updateProduct(id: string, product: Partial<Product>): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, product);
+    return this.http.put(`${this.apiUrl}/${id}`, product, this.httpOptions);
   }
 
   deleteProduct(id: string): Observable<any> {
