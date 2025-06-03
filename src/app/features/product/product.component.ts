@@ -1,11 +1,14 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { CustomButtonComponent } from '../../shared/components/custom-button/custom-button.component';
 import { CustomInputComponent } from '../../shared/components/custom-input/custom-input.component';
 import { CustomFormComponent } from '../../shared/components/custom-form/custom-form.component';
 import { Product } from '../../core/models/product.model';
 import { ProductService } from '../../core/services/product.service';
 import { ModalService } from '../../shared/services/modal.service';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-product',
@@ -16,31 +19,42 @@ import { ModalService } from '../../shared/services/modal.service';
     CustomButtonComponent,
     CustomInputComponent,
     CommonModule,
-    CustomFormComponent
-  ]
+    CustomFormComponent,
+    FormsModule,
+  ],
 })
-export class ProductComponent implements OnInit {  
+export class ProductComponent implements OnInit, OnDestroy {
   products: Product[] = [];
+  allProducts: Product[] = [];
   showAddForm = false;
-  // Controla qué menú de acciones está abierto
+  searchTerm = '';
   openDropdownId: string | null = null;
   dropdownPosition = { top: '0px', left: '0px' };
 
+  private destroy$ = new Subject<void>();
+  private searchSubject = new Subject<string>();
+
   private productService = inject(ProductService);
-  public modalService = inject(ModalService); // Hacer público para el template
+  public modalService = inject(ModalService);
 
   ngOnInit() {
     this.getProducts();
+    this.setupSearchSubscription();
+  }
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
+  getProducts() {
+    this.modalService.loading(
+      'Cargando productos...',
+      'Por favor espere mientras se cargan los productos'
+    );
 
-  // Método para obtener todos los productos
-  getProducts(){
-    this.modalService.loading('Cargando productos...', 'Por favor espere mientras se cargan los productos');
-    
-    this.productService.getProducts()
-    .subscribe({
-      next: (products: Product[]) =>{
+    this.productService.getProducts().subscribe({
+      next: (products: Product[]) => {
+        this.allProducts = products;
         this.products = products;
         console.log('Products fetched successfully:', this.products);
         this.modalService.close();
@@ -49,12 +63,14 @@ export class ProductComponent implements OnInit {
       error: (error) => {
         console.error('Error fetching products:', error);
         this.modalService.close();
-        this.modalService.error('Error al cargar productos', 'No se pudieron cargar los productos. Por favor intente nuevamente.');
-      }
-    })
+        this.modalService.error(
+          'Error al cargar productos',
+          'No se pudieron cargar los productos. Por favor intente nuevamente.'
+        );
+      },
+    });
   }
 
-  // Obtener producto por ID
   getProductById(id: string) {
     this.productService.getProductById(id).subscribe({
       next: (product) => {
@@ -62,11 +78,10 @@ export class ProductComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al buscar producto:', error);
-      }
+      },
     });
-  }  
-  
-  // Eliminar un producto
+  }
+
   async deleteProductWithConfirmation(product: Product) {
     try {
       const result = await this.modalService.show({
@@ -77,24 +92,30 @@ export class ProductComponent implements OnInit {
         txtBtnCancel: 'Cancelar',
         showCancelButton: true,
         showConfirmButton: true,
-        allowOutsideClick: false
+        allowOutsideClick: false,
       });
-      
+
       if (result.isConfirmed) {
         this.modalService.loading('Eliminando producto...', 'Por favor espere');
-        
+
         this.productService.deleteProduct(product.id).subscribe({
           next: (res) => {
             console.log('Producto eliminado:', res);
             this.modalService.close();
-            this.modalService.success('¡Eliminado!', `El producto "${product.name}" ha sido eliminado exitosamente.`);
+            this.modalService.success(
+              '¡Eliminado!',
+              `El producto "${product.name}" ha sido eliminado exitosamente.`
+            );
             this.getProducts();
           },
           error: (error) => {
             console.error('Error al eliminar producto:', error);
             this.modalService.close();
-            this.modalService.error('Error', 'No se pudo eliminar el producto. Por favor intente nuevamente.');
-          }
+            this.modalService.error(
+              'Error',
+              'No se pudo eliminar el producto. Por favor intente nuevamente.'
+            );
+          },
         });
       }
     } catch (error) {
@@ -102,74 +123,95 @@ export class ProductComponent implements OnInit {
     }
   }
 
-  // Buscar productos por nombre
   searchProductsByName(term: string) {
-    this.productService.searchProductsByName(term).subscribe({
-      next: (products) => {
-        this.products = products;
-        console.log('Productos filtrados:', products);
-      },
-      error: (error) => {
-        console.error('Error al buscar productos:', error);
-      }
-    });
+    this.onSearchTermChange(term);
   }
 
-  // Mostrar formulario de agregar
   onShowAddForm() {
     this.showAddForm = true;
   }
 
-  // Ocultar formulario de agregar
   onHideAddForm() {
     this.showAddForm = false;
   }
 
-  // Manejar submit del formulario de agregar
   onAddProduct(product: Product) {
     this.showAddForm = false;
-    this.modalService.success('¡Producto agregado!', 'El producto ha sido creado exitosamente.');
+    this.modalService.success(
+      '¡Producto agregado!',
+      'El producto ha sido creado exitosamente.'
+    );
     this.getProducts();
   }
-  // Alternar menú desplegable de acciones
+
   toggleDropdown(productId: string, event: Event) {
     event.stopPropagation();
-    
+
     if (this.openDropdownId === productId) {
       this.openDropdownId = null;
       return;
     }
-    
-    // Calcular posición del dropdown
+
     const target = event.target as HTMLElement;
     const rect = target.getBoundingClientRect();
-    
     this.dropdownPosition = {
       top: `${rect.bottom + window.scrollY}px`,
-      left: `${rect.right - 140 + window.scrollX}px` // 140px es el ancho mínimo del dropdown
+      left: `${rect.right - 140 + window.scrollX}px`,
     };
-    
+
     this.openDropdownId = productId;
   }
 
-  // Cerrar menú desplegable
   closeDropdown() {
     this.openDropdownId = null;
   }
 
-  // Editar producto
   onEditProduct(product: Product, event: Event) {
     event.stopPropagation();
     this.closeDropdown();
-    // TODO: Implementar navegación a formulario de edición
     console.log('Editar producto:', product);
-    this.modalService.info('Función en desarrollo', 'La edición de productos estará disponible pronto.');
+    this.modalService.info(
+      'Función en desarrollo',
+      'La edición de productos estará disponible pronto.'
+    );
   }
 
-  // Eliminar producto
   onDeleteProduct(product: Product, event: Event) {
     event.stopPropagation();
     this.closeDropdown();
     this.deleteProductWithConfirmation(product);
+  }
+
+  private setupSearchSubscription() {
+    this.searchSubject
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe((searchTerm) => {
+        this.performSearch(searchTerm);
+      });
+  }
+
+  private performSearch(term: string) {
+    if (!term || term.trim() === '') {
+      this.products = [...this.allProducts];
+      return;
+    }
+
+    this.products = this.allProducts.filter((product) =>
+      product.name.toLowerCase().includes(term.toLowerCase())
+    );
+
+    console.log(
+      `Búsqueda realizada para: "${term}", encontrados: ${this.products.length} productos`
+    );
+  }
+
+  onSearchTermChange(term: string) {
+    this.searchTerm = term;
+    this.searchSubject.next(term);
+  }
+
+  clearSearch() {
+    this.searchTerm = '';
+    this.searchSubject.next('');
   }
 }
