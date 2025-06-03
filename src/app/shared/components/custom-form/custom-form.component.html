@@ -21,7 +21,6 @@
           formControlName="id"
           [showError]="!!getError('id')"
           [errorMessage]="getError('id') || ''"
-          [disabled]="mode === 'edit'"
         />
       </div>
 
@@ -89,7 +88,7 @@
         [ColorHoover]="'#FFDD00'"
         [colorTexto]="'#0F265C'"
         [Texto]="mode === 'add' ? 'Enviar' : 'Guardar'"
-        [disabled]="loading"
+        [disabled]="loading || form.invalid"
         (click)="onSubmit()"
       />
 
