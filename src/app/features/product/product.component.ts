@@ -73,7 +73,7 @@ export class ProductComponent implements OnInit {
         title: '¿Estás seguro?',
         text: `¿Deseas eliminar el producto "${product.name}"? Esta acción no se puede deshacer.`,
         icon: 'warning',
-        txtBtnConfirm: 'Sí, eliminar',
+        txtBtnConfirm: 'Aceptar',
         txtBtnCancel: 'Cancelar',
         showCancelButton: true,
         showConfirmButton: true,
