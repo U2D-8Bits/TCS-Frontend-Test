@@ -1,15 +1,20 @@
+// Importaciones de Angular y dependencias
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+
+// Librerias Externas
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+
+// Componentes y servicios personalizados
 import { CustomButtonComponent } from '../../shared/components/custom-button/custom-button.component';
 import { CustomInputComponent } from '../../shared/components/custom-input/custom-input.component';
 import { CustomFormComponent } from '../../shared/components/custom-form/custom-form.component';
 import { Product } from '../../core/models/product.model';
 import { ProductService } from '../../core/services/product.service';
 import { ModalService } from '../../shared/services/modal.service';
-import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-product',
@@ -25,6 +30,8 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
   ],
 })
 export class ProductComponent implements OnInit, OnDestroy {
+  
+  // Propiedades públicas (para el template)
   products: Product[] = [];
   allProducts: Product[] = [];
   filteredProducts: Product[] = [];
@@ -39,23 +46,142 @@ export class ProductComponent implements OnInit, OnDestroy {
   currentPage = 1;
   totalPages = 1;
   Math = Math;
+  public modalService = inject(ModalService);
 
+  // Propiedades privadas y dependencias inyectadas
   private destroy$ = new Subject<void>();
   private searchSubject = new Subject<string>();
-
   private productService = inject(ProductService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  public modalService = inject(ModalService);
+
+  // ================= Métodos de Ciclo de Vida =================
   ngOnInit() {
     this.getProducts();
     this.setupSearchSubscription();
     this.checkRouteForEdit();
   }
+
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+  // ================= Métodos Públicos =================
+
+  searchProductsByName(term: string) {
+    this.onSearchTermChange(term);
+  }
+
+  onShowAddForm() {
+    this.showEditForm = false;
+    this.editingProduct = null;
+    this.router.navigate(['/products']);
+    this.showAddForm = true;
+  }
+
+  onHideAddForm() {
+    this.navigateToProductList();
+  }
+
+  onAddProduct(product: Product) {
+    this.modalService.success(
+      '¡Producto agregado!',
+      'El producto ha sido creado exitosamente.'
+    );
+    this.getProducts();
+    this.navigateToProductList();
+  }
+
+  onEditProduct(product: Product, event: Event) {
+    event.stopPropagation();
+    this.closeDropdown();
+    this.router.navigate(['/products', product.id]);
+  }
+
+  onShowEditForm(product: Product) {
+    this.router.navigate(['/products', product.id]);
+  }
+
+  onHideEditForm() {
+    this.navigateToProductList();
+  }
+
+  onEditProductSubmit(product: Product) {
+    this.modalService.success(
+      '¡Producto actualizado!',
+      'El producto ha sido actualizado exitosamente.'
+    );
+    this.getProducts();
+    this.navigateToProductList();
+  }
+
+  onDeleteProduct(product: Product, event: Event) {
+    event.stopPropagation();
+    this.closeDropdown();
+    this.deleteProductWithConfirmation(product);
+  }
+
+  onSearchTermChange(term: string) {
+    this.searchTerm = term;
+    this.searchSubject.next(term);
+  }
+
+  clearSearch() {
+    this.searchTerm = '';
+    this.searchSubject.next('');
+  }
+
+  onItemsPerPageChange(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    this.itemsPerPage = parseInt(target.value, 10);
+    this.currentPage = 1;
+    this.updateDisplayedProducts();
+  }
+
+  toggleDropdown(productId: string, event: Event) {
+    event.stopPropagation();
+    if (this.openDropdownId === productId) {
+      this.openDropdownId = null;
+      return;
+    }
+    const target = event.target as HTMLElement;
+    const rect = target.getBoundingClientRect();
+    this.dropdownPosition = {
+      top: `${rect.bottom + window.scrollY}px`,
+      left: `${rect.right - 140 + window.scrollX}px`,
+    };
+    this.openDropdownId = productId;
+  }
+
+  closeDropdown() {
+    this.openDropdownId = null;
+  }
+
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updateDisplayedProducts();
+    }
+  }
+
+  goToPreviousPage() {
+    this.goToPage(this.currentPage - 1);
+  }
+
+  goToNextPage() {
+    this.goToPage(this.currentPage + 1);
+  }
+
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  // ================= Métodos de Data/Servicios =================
 
   getProducts() {
     this.modalService.loading(
@@ -70,7 +196,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.modalService.close();
         this.modalService.toast('Productos cargados exitosamente', 'success');
       },
-      error: (error) => {
+      error: () => {
         this.modalService.close();
         this.modalService.error(
           'Error al cargar productos',
@@ -92,12 +218,10 @@ export class ProductComponent implements OnInit, OnDestroy {
         showConfirmButton: true,
         allowOutsideClick: false,
       });
-
       if (result.isConfirmed) {
         this.modalService.loading('Eliminando producto...', 'Por favor espere');
-
         this.productService.deleteProduct(product.id).subscribe({
-          next: (res) => {
+          next: () => {
             this.modalService.close();
             this.modalService.success(
               '¡Eliminado!',
@@ -105,7 +229,7 @@ export class ProductComponent implements OnInit, OnDestroy {
             );
             this.getProducts();
           },
-          error: (error) => {
+          error: () => {
             this.modalService.close();
             this.modalService.error(
               'Error',
@@ -114,63 +238,11 @@ export class ProductComponent implements OnInit, OnDestroy {
           },
         });
       }
-    } catch (error) {
+    } catch {
     }
   }
 
-  searchProductsByName(term: string) {
-    this.onSearchTermChange(term);
-  }
-
-  onShowAddForm() {
-    this.showEditForm = false;
-    this.editingProduct = null;
-    this.router.navigate(['/products']);
-    this.showAddForm = true;
-  }
-  onHideAddForm() {
-    this.navigateToProductList();
-  }  onAddProduct(product: Product) {
-    this.modalService.success(
-      '¡Producto agregado!',
-      'El producto ha sido creado exitosamente.'
-    );
-    this.getProducts();
-    this.navigateToProductList();
-  }
-
-  toggleDropdown(productId: string, event: Event) {
-    event.stopPropagation();
-
-    if (this.openDropdownId === productId) {
-      this.openDropdownId = null;
-      return;
-    }
-
-    const target = event.target as HTMLElement;
-    const rect = target.getBoundingClientRect();
-    this.dropdownPosition = {
-      top: `${rect.bottom + window.scrollY}px`,
-      left: `${rect.right - 140 + window.scrollX}px`,
-    };
-
-    this.openDropdownId = productId;
-  }
-
-  closeDropdown() {
-    this.openDropdownId = null;
-  }
-  onEditProduct(product: Product, event: Event) {
-    event.stopPropagation();
-    this.closeDropdown();
-    this.router.navigate(['/products', product.id]);
-  }
-
-  onDeleteProduct(product: Product, event: Event) {
-    event.stopPropagation();
-    this.closeDropdown();
-    this.deleteProductWithConfirmation(product);
-  }
+  // ================= Métodos Privados/Helper =================
 
   private setupSearchSubscription() {
     this.searchSubject
@@ -179,6 +251,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.performSearch(searchTerm);
       });
   }
+
   private performSearch(term: string) {
     if (!term || term.trim() === '') {
       this.filteredProducts = [...this.allProducts];
@@ -187,67 +260,24 @@ export class ProductComponent implements OnInit, OnDestroy {
         product.name.toLowerCase().includes(term.toLowerCase())
       );
     }
-
     this.currentPage = 1;
     this.updateDisplayedProducts();
   }
 
-  onSearchTermChange(term: string) {
-    this.searchTerm = term;
-    this.searchSubject.next(term);
-  }
-
-  clearSearch() {
-    this.searchTerm = '';
-    this.searchSubject.next('');
-  }
-
-  onItemsPerPageChange(event: Event) {
-    const target = event.target as HTMLSelectElement;
-    this.itemsPerPage = parseInt(target.value, 10);
-    this.currentPage = 1;
-    this.updateDisplayedProducts();
-  }
-
-  updateDisplayedProducts() {
+  private updateDisplayedProducts() {
     this.totalPages = Math.ceil(
       this.filteredProducts.length / this.itemsPerPage
     );
-
     if (this.currentPage > this.totalPages) {
       this.currentPage = Math.max(1, this.totalPages);
     }
-
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
-
     this.displayedProducts = this.filteredProducts.slice(startIndex, endIndex);
     this.products = this.displayedProducts;
   }
 
-  goToPage(page: number) {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
-      this.updateDisplayedProducts();
-    }
-  }
-
-  goToPreviousPage() {
-    this.goToPage(this.currentPage - 1);
-  }
-
-  goToNextPage() {
-    this.goToPage(this.currentPage + 1);
-  }
-  getPageNumbers(): number[] {
-    const pages: number[] = [];
-    for (let i = 1; i <= this.totalPages; i++) {
-      pages.push(i);
-    }
-    return pages;
-  }
-
-  checkRouteForEdit() {
+  private checkRouteForEdit() {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       const productId = params['id'];
       if (productId) {
@@ -259,7 +289,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadProductForEdit(productId: string) {
+  private loadProductForEdit(productId: string) {
     const existingProduct = this.allProducts.find(p => p.id === productId);
     if (existingProduct) {
       this.editingProduct = existingProduct;
@@ -267,9 +297,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.showAddForm = false;
       return;
     }
-
     this.modalService.loading('Cargando producto...', 'Por favor espere');
-    
     this.productService.getProductById(productId).subscribe({
       next: (product: Product) => {
         this.modalService.close();
@@ -277,7 +305,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.showEditForm = true;
         this.showAddForm = false;
       },
-      error: (error) => {
+      error: () => {
         this.modalService.close();
         this.modalService.error(
           'Error al cargar producto',
@@ -288,22 +316,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     });
   }
 
-  onShowEditForm(product: Product) {
-    this.router.navigate(['/products', product.id]);
-  }
-  onHideEditForm() {
-    this.navigateToProductList();
-  }
-  onEditProductSubmit(product: Product) {
-    this.modalService.success(
-      '¡Producto actualizado!',
-      'El producto ha sido actualizado exitosamente.'
-    );
-    this.getProducts();
-    this.navigateToProductList();
-  }
-
-  navigateToProductList() {
+  private navigateToProductList() {
     this.showAddForm = false;
     this.showEditForm = false;
     this.editingProduct = null;
