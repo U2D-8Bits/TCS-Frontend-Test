@@ -1,3 +1,64 @@
-<p>
-  product works!
-</p>
+<!-- Cuerpo del Componente -->
+<div class="product-container">
+
+  <!-- Encabezado -->
+  <div class="header">
+    <span class="material-symbols-outlined">
+      payments
+    </span>
+    <h1>Banco</h1>
+  </div>
+
+  <!-- Contenedor de Tabla -->
+  <div class="product-table-container">
+    <!-- Menu de Acciones -->
+    <div class="product-actions-row">
+      <!-- Input de Busqueda de Producto -->
+      <div>
+        <app-custom-input type="text" placeholder="Buscar..." />
+      </div>
+    </div>
+
+    <!-- Tabla de productos -->
+    <div class="product-table-content">
+      <!-- Tabla -->
+      <table>
+        <thead>
+          <tr>
+            <th>Logo</th>
+            <th>Nombre del Producto</th>
+            <th>
+              Descripción
+              <span class="material-symbols-outlined">
+                info
+              </span>
+            </th>
+            <th>
+              Fecha de liberación
+              <span class="material-symbols-outlined">
+                info
+              </span>
+            </th>
+            <th>
+              Fecha de reestructuración
+              <span class="material-symbols-outlined">
+                info
+              </span>
+            </th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+      </table>
+
+      <!-- Seccion Footer de la Tabla -->
+      <div class="product-table-footer">
+        <!-- Contador de productos en Tabla -->
+        <div>
+          <span>Productos.length</span>
+        </div>
+        <!-- Select para escoger la cantidad de productos a mostrar (5, 10, 20) -->
+        <div></div>
+      </div>
+    </div>
+  </div>
+</div>
