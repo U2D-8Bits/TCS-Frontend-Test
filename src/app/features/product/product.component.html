@@ -38,21 +38,20 @@
       <app-custom-form *ngIf="showAddForm" [mode]="'add'" (formSubmit)="onAddProduct($event)"
         (formCancel)="onHideAddForm()"></app-custom-form> <ng-container *ngIf="!showAddForm">
         <!-- Vista vacía si no hay productos -->
-        <div *ngIf="products.length === 0 && !searchTerm" class="empty-products-view">
+        <div *ngIf="filteredProducts.length === 0 && !searchTerm" class="empty-products-view">
           <div class="empty-icon">📦</div>
           <div class="empty-title">No hay productos registrados</div>
           <div class="empty-desc">Agrega un producto financiero para comenzar.</div>
         </div>
 
         <!-- Vista de búsqueda sin resultados -->
-        <div *ngIf="products.length === 0 && searchTerm" class="empty-products-view">
+        <div *ngIf="filteredProducts.length === 0 && searchTerm" class="empty-products-view">
           <div class="empty-icon">🔍</div>
           <div class="empty-title">No se encontraron productos</div>
           <div class="empty-desc">No hay productos que coincidan con "{{ searchTerm }}". Intenta con otro término de
             búsqueda.</div>
-        </div>
-        <!-- Tabla -->
-        <table *ngIf="products.length > 0">
+        </div> <!-- Tabla -->
+        <table *ngIf="filteredProducts.length > 0">
           <thead>
             <tr>
               <th>Logo</th>
@@ -78,9 +77,8 @@
               <th>Acciones</th>
             </tr>
           </thead>
-
           <tbody>
-            <tr *ngFor="let product of products">
+            <tr *ngFor="let product of displayedProducts">
               <td>
                 <img [src]="product.logo" alt="Logo {{product.name}}" class="logo" *ngIf="product.logo; else noLogo" />
                 <ng-template #noLogo>
@@ -113,20 +111,46 @@
           </tbody>
 
         </table> <!-- Seccion Footer de la Tabla -->
-        <div class="product-table-footer" *ngIf="products.length > 0">
+        <div class="product-table-footer" *ngIf="filteredProducts.length > 0">
           <!-- Contador de productos en Tabla -->
-          <div>
-            <span *ngIf="!searchTerm">{{products.length}} Resultados</span>
-            <span *ngIf="searchTerm">{{products.length}} de {{allProducts.length}} resultados para
-              "{{searchTerm}}"</span>
+          <div class="footer-info">
+            <span *ngIf="!searchTerm">
+              Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} a
+              {{ Math.min(currentPage * itemsPerPage, filteredProducts.length) }}
+              de {{ filteredProducts.length }} resultados
+            </span>
+            <span *ngIf="searchTerm">
+              Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} a
+              {{ Math.min(currentPage * itemsPerPage, filteredProducts.length) }}
+              de {{ filteredProducts.length }} resultados para "{{ searchTerm }}"
+            </span>
           </div>
+
+          <!-- Controles de paginación -->
+          <div class="pagination-controls" *ngIf="totalPages > 1">
+            <button class="pagination-btn" [disabled]="currentPage === 1" (click)="goToPreviousPage()">
+              ‹ Anterior
+            </button>
+
+            <span class="page-info">
+              Página {{ currentPage }} de {{ totalPages }}
+            </span>
+
+            <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="goToNextPage()">
+              Siguiente ›
+            </button>
+          </div>
+
           <!-- Select para escoger la cantidad de productos a mostrar (5, 10, 20) -->
-          <div>
-            <select class="custom-select">
+          <div class="items-per-page">
+            <label for="itemsPerPage">Mostrar:</label>
+            <select id="itemsPerPage" class="custom-select" [value]="itemsPerPage"
+              (change)="onItemsPerPageChange($event)">
               <option value="5">5</option>
               <option value="10">10</option>
               <option value="20">20</option>
             </select>
+            <span>por página</span>
           </div>
         </div>
       </ng-container>
