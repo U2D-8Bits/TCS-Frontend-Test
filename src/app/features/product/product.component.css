@@ -455,6 +455,9 @@
   flex-wrap: wrap;
   position: relative;
   z-index: 1;
+  background: #fff;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.03);
+  border-radius: 0 0 12px 12px;
 }
 
 .footer-info {
@@ -782,7 +785,7 @@
   transition: all 0.3s ease;
 }
 
-.header-table:has(+ .product-table-container app-custom-form) .header-table-title::after {
+.header-table:has(+ .product-table-container app_custom) .header-table-title::after {
   background: linear-gradient(90deg, #1976d2 0%, #42a5f5 100%);
   opacity: 1;
   animation: pulseBlue 2s ease-in-out infinite;
@@ -809,7 +812,7 @@
   transition: left 0.5s ease;
 }
 
-.header-table:has(+ .product-table-container app-custom_form) .header-table-title .material-symbols-outlined::before {
+.header-table:has(+ .product-table-container app_custom) .header-table-title .material-symbols-outlined::before {
   left: 100%;
 }
 
@@ -884,4 +887,122 @@
 @keyframes progressBar {
   0%, 100% { opacity: 0.6; }
   50% { opacity: 1; }
+}
+
+/* --- Responsividad para la tabla de productos --- */
+
+/* Contenedor para scroll horizontal en pantallas pequeñas */
+@media (max-width: 900px) {
+  .product-table-content {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+  }
+  .product-table-content table {
+    width: 100%;
+    min-width: 600px;
+    /* Elimina display:block y width:max-content para mejor ajuste */
+  }
+  .product-table-content thead,
+  .product-table-content tbody {
+    display: table;
+    width: 100%;
+    table-layout: auto;
+  }
+  .product-table-content th,
+  .product-table-content td {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 0.95rem;
+    padding: 10px 8px;
+  }
+
+  .product-table-container {
+    padding-bottom: 0 !important;
+  }
+}
+
+/* En pantallas grandes, la tabla debe ocupar todo el ancho del contenedor */
+.product-table-content table {
+  width: 100%;
+  min-width: unset;
+  table-layout: auto;
+}
+
+.product-table-content {
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+}
+
+/* Mejorar la visibilidad de la barra de scroll horizontal */
+.product-table-content::-webkit-scrollbar {
+  height: 8px;
+}
+.product-table-content::-webkit-scrollbar-thumb {
+  background: #e0e0e0;
+  border-radius: 4px;
+}
+.product-table-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Ajuste de padding del contenedor principal para aprovechar mejor el espacio */
+.product-container {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+@media (min-width: 900px) {
+  .product-container {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+/* --- Scroll horizontal solo para la tabla, sticky header --- */
+.table-scroll-x {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 0;
+}
+.table-scroll-x table {
+  width: 100%;
+  min-width: 700px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+}
+.table-scroll-x thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.table-scroll-x th {
+  background: #fff;
+}
+
+/* Ajuste para que el footer quede fuera y visible */
+.product-table-footer {
+  background: #fff;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.03);
+  border-radius: 0 0 12px 12px;
+}
+
+/* Elimina scroll horizontal del contenedor general de la tabla */
+.product-table-content {
+  overflow-x: unset;
+}
+
+@media (max-width: 900px) {
+  .table-scroll-x table {
+    min-width: 600px;
+  }
 }
