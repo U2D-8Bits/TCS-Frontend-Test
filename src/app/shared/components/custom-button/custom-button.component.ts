@@ -12,6 +12,7 @@ export class CustomButtonComponent implements OnInit {
   @Input() colorBoton: string = '#FFDD00'; // acepta hex
   @Input() Texto: string = 'Botón';
   @Input() ColorHoover: string = '#0056b3'; // acepta hex
+  @Input() disabled: boolean = false;
 
   hover = false;
 
