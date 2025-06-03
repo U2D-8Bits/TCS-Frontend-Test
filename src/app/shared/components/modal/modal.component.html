@@ -1,3 +1,49 @@
-<p>
-  modal works!
-</p>
+<!-- Modal overlay -->
+<div 
+  class="modal-overlay" 
+  [class.visible]="isVisible"
+  (click)="onBackdropClick($event)"
+  *ngIf="modalConfig">
+  
+  <!-- Modal content -->
+  <div class="modal-content" [class.toast]="modalConfig.timer">
+    
+    <!-- Icon section -->
+    <div class="modal-icon-container" *ngIf="modalConfig.icon">
+      <div class="modal-icon" [class]="getIconClass()">
+        <span *ngIf="modalConfig.icon !== 'loading'">{{ getIconSymbol() }}</span>
+        <div *ngIf="modalConfig.icon === 'loading'" class="loading-spinner"></div>
+      </div>
+    </div>
+
+    <!-- Content section -->
+    <div class="modal-body">
+      <h2 class="modal-title" *ngIf="modalConfig.title">
+        {{ modalConfig.title }}
+      </h2>
+      
+      <p class="modal-text" *ngIf="modalConfig.text">
+        {{ modalConfig.text }}
+      </p>
+    </div>
+
+    <!-- Actions section -->
+    <div class="modal-actions" *ngIf="modalConfig.showConfirmButton || modalConfig.showCancelButton">
+      <button 
+        type="button"
+        class="modal-btn modal-btn-cancel"
+        *ngIf="modalConfig.showCancelButton"
+        (click)="onCancel()">
+        {{ modalConfig.txtBtnCancel || 'Cancelar' }}
+      </button>
+      
+      <button 
+        type="button"
+        class="modal-btn modal-btn-confirm"
+        *ngIf="modalConfig.showConfirmButton"
+        (click)="onConfirm()">
+        {{ modalConfig.txtBtnConfirm || 'Aceptar' }}
+      </button>
+    </div>
+  </div>
+</div>
