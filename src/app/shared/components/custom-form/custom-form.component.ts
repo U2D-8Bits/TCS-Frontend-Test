@@ -126,7 +126,9 @@ export class CustomFormComponent implements OnInit {
 
   getError(controlName: string): string | null {
     const control = this.form.get(controlName);
-    if (!control || (!control.touched && !control.dirty)) return null;
+    if (!control) return null;
+    // Mostrar error si el control fue tocado o el formulario fue enviado
+    if (!(control.touched || control.dirty)) return null;
     if (control.errors?.['required']) return 'Este campo es requerido';
     if (control.errors?.['minlength']) return `Mínimo ${control.errors['minlength'].requiredLength} caracteres`;
     if (control.errors?.['maxlength']) return `Máximo ${control.errors['maxlength'].requiredLength} caracteres`;
