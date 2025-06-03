@@ -26,10 +26,16 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 export class ProductComponent implements OnInit, OnDestroy {
   products: Product[] = [];
   allProducts: Product[] = [];
+  filteredProducts: Product[] = [];
+  displayedProducts: Product[] = [];
   showAddForm = false;
   searchTerm = '';
   openDropdownId: string | null = null;
   dropdownPosition = { top: '0px', left: '0px' };
+  itemsPerPage = 5;
+  currentPage = 1;
+  totalPages = 1;
+  Math = Math;
 
   private destroy$ = new Subject<void>();
   private searchSubject = new Subject<string>();
@@ -51,12 +57,12 @@ export class ProductComponent implements OnInit, OnDestroy {
       'Cargando productos...',
       'Por favor espere mientras se cargan los productos'
     );
-
     this.productService.getProducts().subscribe({
       next: (products: Product[]) => {
         this.allProducts = products;
-        this.products = products;
-        console.log('Products fetched successfully:', this.products);
+        this.filteredProducts = products;
+        this.updateDisplayedProducts();
+        console.log('Products fetched successfully:', this.allProducts);
         this.modalService.close();
         this.modalService.toast('Productos cargados exitosamente', 'success');
       },
@@ -134,7 +140,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   onHideAddForm() {
     this.showAddForm = false;
   }
-
   onAddProduct(product: Product) {
     this.showAddForm = false;
     this.modalService.success(
@@ -189,19 +194,20 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.performSearch(searchTerm);
       });
   }
-
   private performSearch(term: string) {
     if (!term || term.trim() === '') {
-      this.products = [...this.allProducts];
-      return;
+      this.filteredProducts = [...this.allProducts];
+    } else {
+      this.filteredProducts = this.allProducts.filter((product) =>
+        product.name.toLowerCase().includes(term.toLowerCase())
+      );
     }
 
-    this.products = this.allProducts.filter((product) =>
-      product.name.toLowerCase().includes(term.toLowerCase())
-    );
+    this.currentPage = 1;
+    this.updateDisplayedProducts();
 
     console.log(
-      `Búsqueda realizada para: "${term}", encontrados: ${this.products.length} productos`
+      `Búsqueda realizada para: "${term}", encontrados: ${this.filteredProducts.length} productos`
     );
   }
 
@@ -213,5 +219,51 @@ export class ProductComponent implements OnInit, OnDestroy {
   clearSearch() {
     this.searchTerm = '';
     this.searchSubject.next('');
+  }
+
+  onItemsPerPageChange(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    this.itemsPerPage = parseInt(target.value, 10);
+    this.currentPage = 1; // Reset to first page
+    this.updateDisplayedProducts();
+  }
+
+  updateDisplayedProducts() {
+    this.totalPages = Math.ceil(
+      this.filteredProducts.length / this.itemsPerPage
+    );
+
+    if (this.currentPage > this.totalPages) {
+      this.currentPage = Math.max(1, this.totalPages);
+    }
+
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+
+    this.displayedProducts = this.filteredProducts.slice(startIndex, endIndex);
+    this.products = this.displayedProducts;
+  }
+
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updateDisplayedProducts();
+    }
+  }
+
+  goToPreviousPage() {
+    this.goToPage(this.currentPage - 1);
+  }
+
+  goToNextPage() {
+    this.goToPage(this.currentPage + 1);
+  }
+
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
   }
 }
