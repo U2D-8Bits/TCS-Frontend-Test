@@ -1,14 +1,13 @@
-<div class="container-body">
+<div class="container-body" [class.loading]="loading">
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
-
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">    
     <!-- Encabezado -->
     <div class="form-header">
-      <h1>Formulario de {{ mode === 'add' ? 'Registro' : 'Edición' }}</h1>
+      <h1>{{ mode === 'add' ? 'Nuevo Producto Financiero' : 'Editar Producto Financiero' }}</h1>
     </div>
 
     <!-- Divisor -->
-    <hr>
+    <hr aria-hidden="true">
 
     <!-- Contenido del formulario -->
     <div class="form-content">
@@ -79,33 +78,31 @@
         />
       </div>
 
-    </div>
-
+    </div>    
     <!-- Botones -->
     <div class="form-buttons">
       <app-custom-button
         [colorBoton]="'#FFDD00'"
         [ColorHoover]="'#FFDD00'"
         [colorTexto]="'#0F265C'"
-        [Texto]="mode === 'add' ? 'Enviar' : 'Guardar'"
+        [Texto]="mode === 'add' ? 'Crear Producto' : 'Guardar Cambios'"
         [disabled]="loading || form.invalid"
         (click)="onSubmit()"
       />
 
       <app-custom-button 
-        [colorBoton]="'#D9D9D9'"
-        [ColorHoover]="'#D9D9D9'"
-        [colorTexto]="'#0F265C'"
+        [colorBoton]="'#6c757d'"
+        [ColorHoover]="'#5a6268'"
+        [colorTexto]="'#fff'"
         [Texto]="'Reiniciar'"
         [disabled]="loading"
         (click)="onReset()"
       />
 
       <app-custom-button 
-        *ngIf="mode === 'edit'"
-        [colorBoton]="'#D9D9D9'"
-        [ColorHoover]="'#D9D9D9'"
-        [colorTexto]="'#0F265C'"
+        [colorBoton]="'#dc3545'"
+        [ColorHoover]="'#c82333'"
+        [colorTexto]="'#fff'"
         [Texto]="'Cancelar'"
         [disabled]="loading"
         (click)="onCancel()"
