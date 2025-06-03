@@ -3,7 +3,7 @@
   <!-- Encabezado de la Tabla (HeaderTable) -->
   <div class="header-table">
     <div class="header-table-title">
-      <span class="material-symbols-outlined">table_view</span>
+      <span class="material-symbols-outlined">payments</span>
       <div>
         <h2>Productos Financieros</h2>
         <p class="header-table-desc">Listado de productos registrados en el sistema</p>
@@ -14,8 +14,10 @@
   <!-- Contenedor de Tabla -->
   <div class="product-table-container">
     <!-- Menu de Acciones -->
-    <div class="product-actions-row" *ngIf="!showAddForm"> <!-- Input de Busqueda de Producto -->
+    <div class="product-actions-row" *ngIf="!showAddForm"> 
+      
       <div class="search-input-container">
+        <!-- Input de Busqueda de Producto -->
         <app-custom-input type="text" placeholder="Buscar productos por nombre..." [(ngModel)]="searchTerm"
           (ngModelChange)="onSearchTermChange($event)">
         </app-custom-input>
@@ -50,7 +52,8 @@
           <div class="empty-title">No se encontraron productos</div>
           <div class="empty-desc">No hay productos que coincidan con "{{ searchTerm }}". Intenta con otro término de
             búsqueda.</div>
-        </div> <!-- Tabla -->
+        </div>
+        <!-- Tabla -->
         <table *ngIf="filteredProducts.length > 0">
           <thead>
             <tr>
@@ -74,7 +77,7 @@
                   info
                 </span>
               </th>
-              <th>Acciones</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
