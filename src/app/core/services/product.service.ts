@@ -48,14 +48,4 @@ export class ProductService {
       )
     );
   }
-
-  searchProductsById(term: string): Observable<Product[]> {
-    return this.getProducts().pipe(
-      map((products: Product[]) =>
-        products.filter(product =>
-          product.id.toLowerCase().includes(term.toLowerCase())
-        )
-      )
-    );
-  }
 }
