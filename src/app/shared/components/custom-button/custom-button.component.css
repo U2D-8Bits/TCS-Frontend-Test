@@ -1,27 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
 .custom-btn {
-  font-family: 'Poppins', Arial, sans-serif;
-  font-size: 1rem;
-  padding: 0.75em 2em;
+  font-family: 'prelo-semibold', 'Poppins', Arial, sans-serif;
+  width: max-content;
+  height: 40px;
+  font-size: 14px;
+  line-height: 24px;
+  padding: 8px 24px;
   border: none;
   border-radius: 0.5em;
   cursor: pointer;
-  transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s;
+  transition: background 0.3s, color 0.3s;
   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
   outline: none;
   font-weight: 600;
   letter-spacing: 0.03em;
-  background: var(--btn-bg, #007bff);
-  color: var(--btn-color, #fff);
-}
-
-.custom-btn.hovered,
-.custom-btn:hover {
-  background: var(--btn-hover, #0056b3);
-  color: var(--btn-hover-color, #fff);
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
 }
 
 @media (max-width: 600px) {
