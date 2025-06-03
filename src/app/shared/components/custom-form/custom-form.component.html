@@ -1,3 +1,120 @@
-<p>
-  custom-form works!
-</p>
+<div class="container-body">
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
+
+    <!-- Encabezado -->
+    <div class="form-header">
+      <h1>Formulario de {{ mode === 'add' ? 'Registro' : 'Edición' }}</h1>
+    </div>
+
+    <!-- Divisor -->
+    <hr>
+
+    <!-- Contenido del formulario -->
+    <div class="form-content">
+
+      <div class="form-group">
+        <app-custom-input
+          [label]="'ID'"
+          [placeholder]="'ID del Producto'"
+          [type]="'text'"
+          formControlName="id"
+          [ngClass]="{'input-error': getError('id')}"
+          [disabled]="mode === 'edit'"
+        />
+        <div *ngIf="getError('id')" class="error-message">{{ getError('id') }}</div>
+      </div>
+
+      <div class="form-group">
+        <app-custom-input
+          [label]="'Nombre'"
+          [placeholder]="'Nombre del Producto'"
+          [type]="'text'"
+          formControlName="name"
+          [ngClass]="{'input-error': getError('name')}"
+        />
+        <div *ngIf="getError('name')" class="error-message">{{ getError('name') }}</div>
+      </div>
+
+      <div class="form-group">
+        <app-custom-input
+          [label]="'Descripción'"
+          [placeholder]="'Descripción del Producto'"
+          [type]="'text'"
+          formControlName="description"
+          [ngClass]="{'input-error': getError('description')}"
+        />
+        <div *ngIf="getError('description')" class="error-message">{{ getError('description') }}</div>
+      </div>
+
+      <div class="form-group">
+        <app-custom-input
+          [label]="'Logo'"
+          [placeholder]="'Logo del Producto'"
+          [type]="'text'"
+          formControlName="logo"
+          [ngClass]="{'input-error': getError('logo')}"
+        />
+        <div *ngIf="getError('logo')" class="error-message">{{ getError('logo') }}</div>
+      </div>
+
+      <div class="form-group">
+        <app-custom-input
+          [label]="'Fecha Liberación'"
+          [placeholder]="'Fecha de Liberación del Producto'"
+          [type]="'date'"
+          formControlName="releaseDate"
+          [ngClass]="{'input-error': getError('releaseDate')}"
+        />
+        <div *ngIf="getError('releaseDate')" class="error-message">{{ getError('releaseDate') }}</div>
+      </div>
+
+      <div class="form-group">
+        <app-custom-input
+          [label]="'Fecha de Revisión'"
+          [placeholder]="'Fecha de Revisión del Producto'"
+          [type]="'date'"
+          formControlName="reviewDate"
+          [ngClass]="{'input-error': getError('reviewDate')}"
+        />
+        <div *ngIf="getError('reviewDate')" class="error-message">{{ getError('reviewDate') }}</div>
+      </div>
+
+    </div>
+
+    <!-- Botones -->
+    <div class="form-buttons">
+      <app-custom-button
+        [colorBoton]="'#FFDD00'"
+        [ColorHoover]="'#FFDD00'"
+        [colorTexto]="'#0F265C'"
+        [Texto]="mode === 'add' ? 'Enviar' : 'Guardar'"
+        [disabled]="loading"
+        (click)="onSubmit()"
+      />
+
+      <app-custom-button 
+        [colorBoton]="'#D9D9D9'"
+        [ColorHoover]="'#D9D9D9'"
+        [colorTexto]="'#0F265C'"
+        [Texto]="'Reiniciar'"
+        [disabled]="loading"
+        (click)="onReset()"
+      />
+
+      <app-custom-button 
+        *ngIf="mode === 'edit'"
+        [colorBoton]="'#D9D9D9'"
+        [ColorHoover]="'#D9D9D9'"
+        [colorTexto]="'#0F265C'"
+        [Texto]="'Cancelar'"
+        [disabled]="loading"
+        (click)="onCancel()"
+      />
+    </div>
+
+    <div *ngIf="errorMsg" class="error-message" style="text-align:center; margin-top:12px;">{{ errorMsg }}</div>
+
+  </form>
+
+</div>
