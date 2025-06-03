@@ -1,12 +1,14 @@
 <!-- Cuerpo del Componente -->
 <div class="product-container">
-
-  <!-- Encabezado -->
-  <div class="header">
-    <span class="material-symbols-outlined">
-      payments
-    </span>
-    <h1>Banco</h1>
+  <!-- Encabezado de la Tabla (HeaderTable) -->
+  <div class="header-table">
+    <div class="header-table-title">
+      <span class="material-symbols-outlined">table_view</span>
+      <div>
+        <h2>Productos Financieros</h2>
+        <p class="header-table-desc">Listado de productos registrados en el sistema</p>
+      </div>
+    </div>
   </div>
 
   <!-- Contenedor de Tabla -->
@@ -14,22 +16,19 @@
     <!-- Menu de Acciones -->
     <div class="product-actions-row" *ngIf="!showAddForm">
       <!-- Input de Busqueda de Producto -->
-      <div style="flex:1; max-width:320px;">
+      <div class="search-input-container">
         <app-custom-input 
           type="text" 
-          placeholder="Buscar..." 
-          style="width:100%">
+          placeholder="Buscar...">
         </app-custom-input>
       </div>
-
-      <!-- Boton de Agregar Producto -->
-      <div>
+      <!-- Botón Agregar -->
+      <div class="add-button-container">
         <app-custom-button 
           [Texto]="'Agregar'" 
           [colorBoton]="'#FFD600'"
           [ColorHoover]="'#FFEA00'" 
-          [colorTexto]="'#222'" 
-          style="font-weight:600; min-width:120px;"
+          [colorTexto]="'#222'"
           (click)="onShowAddForm()"
         >
         </app-custom-button>
@@ -85,16 +84,15 @@
               <td>
                 <img [src]="product.logo" alt="Logo {{product.name}}" class="logo" *ngIf="product.logo; else noLogo" />
                 <ng-template #noLogo>
-                  <div class="logo" style="background:#e0e0e0; color:#757575; display:flex;align-items:center;justify-content:center;">?</div>
+                  <div class="logo logo-fallback">?</div>
                 </ng-template>
               </td>
-              <td style="font-weight:600; color:#222;">{{ product.name }}</td>
-              <td style="max-width:260px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ product.description }}</td>
-              <td>{{ product.date_release | date:'yyyy-MM-dd' }}</td>
-              <td>{{ product.date_revision | date:'yyyy-MM-dd' }}</td>
+              <td class="product-name">{{ product.name }}</td>
+              <td class="product-description">{{ product.description }}</td>
+              <td>{{ product.date_release | date:'dd-MM-yyyy' }}</td>
+              <td>{{ product.date_revision | date:'dd-MM-yyyy' }}</td>
               <td class="actions">
-                <!-- Placeholder for dropdown actions (edit/delete) -->
-                <span class="material-symbols-outlined" style="cursor:pointer;">more_vert</span>
+                <span class="material-symbols-outlined">more_vert</span>
               </td>
             </tr>
           </tbody>
