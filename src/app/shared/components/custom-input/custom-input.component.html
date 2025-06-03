@@ -1,3 +1,20 @@
-<p>
-  custom-input works!
-</p>
+<div class="custom-input-group">
+  <label *ngIf="label" class="custom-input-label">{{ label }}</label>
+  <div class="custom-input-wrapper">
+    <input
+      [type]="type"
+      class="custom-input"
+      [placeholder]="placeholder"
+      [value]="value"
+      [disabled]="disabled"
+      (input)="handleInput($event)"
+      (blur)="handleBlur()"
+      [ngClass]="{ 'has-error': showError }"
+      autocomplete="off"
+    />
+    <span class="custom-input-underline"></span>
+  </div>
+  <div class="custom-input-error" *ngIf="showError">
+    {{ errorMessage }}
+  </div>
+</div>
