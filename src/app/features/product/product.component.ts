@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CustomButtonComponent } from '../../shared/components/custom-button/custom-button.component';
 import { CustomInputComponent } from '../../shared/components/custom-input/custom-input.component';
+import { CustomFormComponent } from '../../shared/components/custom-form/custom-form.component';
 import { Product } from '../../core/models/product.model';
 import { ProductService } from '../../core/services/product.service';
 
@@ -13,21 +14,20 @@ import { ProductService } from '../../core/services/product.service';
   imports: [
     CustomButtonComponent,
     CustomInputComponent,
-    CommonModule
+    CommonModule,
+    CustomFormComponent
   ]
 })
 export class ProductComponent implements OnInit {
 
   products: Product[] = [];
+  showAddForm = false;
 
   private productService = inject(ProductService);
-
-  
 
   ngOnInit() {
     this.getProducts();
   }
-
 
   // Método para obtener todos los productos
   getProducts(){
@@ -79,6 +79,22 @@ export class ProductComponent implements OnInit {
         console.error('Error al buscar productos:', error);
       }
     });
+  }
+
+  // Mostrar formulario de agregar
+  onShowAddForm() {
+    this.showAddForm = true;
+  }
+
+  // Ocultar formulario de agregar
+  onHideAddForm() {
+    this.showAddForm = false;
+  }
+
+  // Manejar submit del formulario de agregar
+  onAddProduct(product: Product) {
+    this.showAddForm = false;
+    this.getProducts();
   }
 
 }

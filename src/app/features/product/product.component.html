@@ -29,7 +29,9 @@
           [colorBoton]="'#FFD600'"
           [ColorHoover]="'#FFEA00'" 
           [colorTexto]="'#222'" 
-          style="font-weight:600; min-width:120px;">
+          style="font-weight:600; min-width:120px;"
+          (click)="onShowAddForm()"
+        >
         </app-custom-button>
       </div>
 
@@ -37,6 +39,13 @@
 
     <!-- Tabla de productos -->
     <div class="product-table-content">
+      <!-- Formulario de agregar producto -->
+      <app-custom-form
+        *ngIf="showAddForm"
+        [mode]="'add'"
+        (formSubmit)="onAddProduct($event)"
+        (formCancel)="onHideAddForm()"
+      ></app-custom-form>
       <!-- Vista vacía si no hay productos -->
       <div *ngIf="products.length === 0" class="empty-products-view">
         <div class="empty-icon">📦</div>
