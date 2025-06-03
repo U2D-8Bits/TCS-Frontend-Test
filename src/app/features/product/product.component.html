@@ -17,20 +17,13 @@
     <div class="product-actions-row" *ngIf="!showAddForm">
       <!-- Input de Busqueda de Producto -->
       <div class="search-input-container">
-        <app-custom-input 
-          type="text" 
-          placeholder="Buscar...">
+        <app-custom-input type="text" placeholder="Buscar...">
         </app-custom-input>
       </div>
       <!-- Botón Agregar -->
       <div class="add-button-container">
-        <app-custom-button 
-          [Texto]="'Agregar'" 
-          [colorBoton]="'#FFD600'"
-          [ColorHoover]="'#FFEA00'" 
-          [colorTexto]="'#222'"
-          (click)="onShowAddForm()"
-        >
+        <app-custom-button [Texto]="'Agregar'" [colorBoton]="'#FFD600'" [ColorHoover]="'#FFEA00'" [colorTexto]="'#222'"
+          (click)="onShowAddForm()">
         </app-custom-button>
       </div>
     </div>
@@ -38,12 +31,8 @@
     <!-- Tabla de productos o formulario -->
     <div class="product-table-content">
       <!-- Formulario de agregar producto -->
-      <app-custom-form
-        *ngIf="showAddForm"
-        [mode]="'add'"
-        (formSubmit)="onAddProduct($event)"
-        (formCancel)="onHideAddForm()"
-      ></app-custom-form>
+      <app-custom-form *ngIf="showAddForm" [mode]="'add'" (formSubmit)="onAddProduct($event)"
+        (formCancel)="onHideAddForm()"></app-custom-form>
       <ng-container *ngIf="!showAddForm">
         <!-- Vista vacía si no hay productos -->
         <div *ngIf="products.length === 0" class="empty-products-view">
@@ -116,4 +105,3 @@
       </ng-container>
     </div>
   </div>
-</div>
