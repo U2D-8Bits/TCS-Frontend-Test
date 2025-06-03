@@ -110,6 +110,7 @@
 .product-table-content tbody {
   display: block;
   overflow-y: auto;
+  overflow-x: visible;
   max-height: calc(100vh - 300px);
   scrollbar-width: thin;
   scrollbar-color: #ccc transparent;
@@ -150,6 +151,7 @@
   display: table;
   width: 100%;
   table-layout: fixed;
+  position: relative;
 }
 
 .product-table-content thead tr {
@@ -248,12 +250,13 @@
 .product-table-content .actions {
   text-align: right;
   min-width: 40px;
-  position: relative;
+  position: static;
 }
 
 .actions-dropdown {
   position: relative;
   display: inline-block;
+  z-index: 1000;
 }
 
 .actions-trigger {
@@ -277,15 +280,13 @@
 
 /* Menú desplegable */
 .dropdown-menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
+  position: fixed;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border: 1px solid #e0e0e0;
   min-width: 140px;
-  z-index: 9999;
+  z-index: 10000;
   overflow: hidden;
   animation: dropdownFadeIn 0.2s ease-out;
 }
@@ -666,43 +667,7 @@
   }
 }
 
-
-.product-table-content tbody {
-  scrollbar-width: thin;
-  scrollbar-color: #ccc transparent;
-}
-
-.product-table-content tbody::-webkit-scrollbar {
-  width: 6px;
-}
-
-.product-table-content tbody::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.product-table-content tbody::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 3px;
-}
-
-.product-table-content tbody::-webkit-scrollbar-thumb:hover {
-  background: #999;
-}
-
-
-@media (pointer: coarse) {
-  .actions-trigger {
-    min-width: 44px;
-    min-height: 44px;
-  }
-  
-  .dropdown-item {
-    min-height: 44px;
-    padding: 12px 16px;
-  }
-}
-
-
+/* High DPI screens */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .product-table-content .logo,
   .logo-fallback {
@@ -711,7 +676,7 @@
   }
 }
 
-
+/* Prefers reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .dropdown-menu {
     animation: none;
