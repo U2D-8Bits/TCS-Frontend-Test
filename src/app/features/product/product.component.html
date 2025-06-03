@@ -1,22 +1,29 @@
-<!-- Cuerpo del Componente -->
 <div class="product-container">
+
+
   <!-- Encabezado de la Tabla (HeaderTable) -->
   <div class="header-table">
     <div class="header-table-title">
-      <span class="material-symbols-outlined">payments</span>      <div>
-        <h2 *ngIf="!showEditForm">Productos Financieros</h2>
+      <span class="material-symbols-outlined">payments</span>
+      <div>
+        <h2 *ngIf="!showEditForm && !showAddForm">Productos Financieros</h2>
+        <h2 *ngIf="showAddForm">Agregar Nuevo Producto</h2>
         <h2 *ngIf="showEditForm && editingProduct">Editar: {{ editingProduct.name }}</h2>
-        <p class="header-table-desc" *ngIf="!showEditForm">Listado de productos registrados en el sistema</p>
+        <p class="header-table-desc" *ngIf="!showEditForm && !showAddForm">Listado de productos registrados en el
+          sistema</p>
+        <p class="header-table-desc" *ngIf="showAddForm">Completa los datos para crear un nuevo producto financiero</p>
         <p class="header-table-desc" *ngIf="showEditForm">Modificar información del producto seleccionado</p>
       </div>
     </div>
   </div>
 
+
+
   <!-- Contenedor de Tabla -->
-  <div class="product-table-container">    
+  <div class="product-table-container">
     <!-- Menu de Acciones -->
     <div class="product-actions-row" *ngIf="!showAddForm && !showEditForm">
-      
+
       <div class="search-input-container">
         <!-- Input de Busqueda de Producto -->
         <app-custom-input type="text" placeholder="Buscar productos por nombre..." [(ngModel)]="searchTerm"
@@ -33,16 +40,20 @@
           (click)="onShowAddForm()">
         </app-custom-button>
       </div>
-    </div>    <!-- Tabla de productos o formulario -->
+    </div>
+
+
+
+    <!-- Tabla de productos o formulario -->
     <div class="product-table-content" (click)="closeDropdown()">
       <!-- Formulario de agregar producto -->
       <app-custom-form *ngIf="showAddForm" [mode]="'add'" (formSubmit)="onAddProduct($event)"
         (formCancel)="onHideAddForm()"></app-custom-form>
-        
+
       <!-- Formulario de editar producto -->
-      <app-custom-form *ngIf="showEditForm && editingProduct" [mode]="'edit'" [initialData]="editingProduct" 
+      <app-custom-form *ngIf="showEditForm && editingProduct" [mode]="'edit'" [initialData]="editingProduct"
         (formSubmit)="onEditProductSubmit($event)" (formCancel)="onHideEditForm()"></app-custom-form>
-        
+
       <ng-container *ngIf="!showAddForm && !showEditForm">
         <!-- Vista vacía si no hay productos -->
         <div *ngIf="filteredProducts.length === 0 && !searchTerm" class="empty-products-view">
@@ -163,4 +174,6 @@
         </div>
       </ng-container>
     </div>
+
+
   </div>
