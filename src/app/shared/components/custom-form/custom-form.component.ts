@@ -195,10 +195,12 @@ export class CustomFormComponent implements OnInit {
       },
     });
   }
-
   onReset() {
     if (this.mode === 'edit' && this.initialData) {
-      this.form.reset({ ...this.initialData });
+      this.form.patchValue({
+        ...this.initialData,
+      });
+      this.form.get('id')?.disable();
     } else {
       this.form.reset();
     }

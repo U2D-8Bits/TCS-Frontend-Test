@@ -36,15 +36,15 @@
           formControlName="date_revision" [showError]="!!getError('date_revision')"
           [errorMessage]="getError('date_revision') || ''" />
       </div>
-    </div>
-    <!-- Botones -->
+    </div> <!-- Botones -->
     <div class="form-buttons">
 
       <app-custom-button [colorBoton]="'#6c757d'" [ColorHoover]="'#5a6268'" [colorTexto]="'#fff'" [Texto]="'Reiniciar'"
-        [disabled]="loading" (click)="onReset()" />
+        [disabled]="loading" [type]="'button'" (click)="onReset()" />
 
       <app-custom-button [colorBoton]="'#FFDD00'" [ColorHoover]="'#FFDD00'" [colorTexto]="'#0F265C'"
-        [Texto]="mode === 'add' ? 'Agregar' : 'Actualizar'" [disabled]="loading || form.invalid" (click)="onSubmit()" />
+        [Texto]="mode === 'add' ? 'Agregar' : 'Actualizar'" [disabled]="loading || form.invalid" [type]="'submit'"
+        (click)="onSubmit()" />
     </div>
 
     <div *ngIf="errorMsg" class="error-message" style="text-align:center; margin-top:12px;">{{ errorMsg }}</div>
