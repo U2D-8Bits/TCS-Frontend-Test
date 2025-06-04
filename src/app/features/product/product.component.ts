@@ -47,6 +47,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   totalPages = 1;
   Math = Math;
   public modalService = inject(ModalService);
+  loading: boolean = false;
 
   // Propiedades privadas y dependencias inyectadas
   private destroy$ = new Subject<void>();
@@ -77,6 +78,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   onShowAddForm() {
+    this.loading = false; // Asegura que no quede skeleton
     this.showEditForm = false;
     this.editingProduct = null;
     this.router.navigate(['/products']);
@@ -103,6 +105,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   onShowEditForm(product: Product) {
+    this.loading = false; // Asegura que no quede skeleton
     this.router.navigate(['/products', product.id]);
   }
 
@@ -187,20 +190,24 @@ export class ProductComponent implements OnInit, OnDestroy {
   // ================= Métodos de Data/Servicios =================
 
   getProducts() {
+    this.loading = true;
     this.modalService.loading(
       'Cargando productos...',
       'Por favor espere mientras se cargan los productos'
     );
     this.productService.getProducts().subscribe({
-      next: (products: Product[]) => {
+      next: async (products: Product[]) => {
         this.allProducts = products;
         this.filteredProducts = products;
         this.updateDisplayedProducts();
         this.modalService.close();
+        await new Promise(res => setTimeout(res, 1000)); // Espera 1s antes del toast
+        this.loading = false;
         this.modalService.toast('Productos cargados exitosamente', 'success');
       },
       error: () => {
         this.modalService.close();
+        this.loading = false;
         this.modalService.error(
           'Error al cargar productos',
           'No se pudieron cargar los productos. Por favor intente nuevamente.'
@@ -222,10 +229,13 @@ export class ProductComponent implements OnInit, OnDestroy {
         allowOutsideClick: false,
       });
       if (result.isConfirmed) {
+        this.loading = true;
         this.modalService.loading('Eliminando producto...', 'Por favor espere');
         this.productService.deleteProduct(product.id).subscribe({
-          next: () => {
+          next: async () => {
             this.modalService.close();
+            await new Promise(res => setTimeout(res, 1000)); // Espera 1s antes del modal de éxito
+            this.loading = false;
             this.modalService.success(
               '¡Eliminado!',
               `El producto "${product.name}" ha sido eliminado exitosamente.`
@@ -234,6 +244,7 @@ export class ProductComponent implements OnInit, OnDestroy {
           },
           error: () => {
             this.modalService.close();
+            this.loading = false;
             this.modalService.error(
               'Error',
               'No se pudo eliminar el producto. Por favor intente nuevamente.'
@@ -242,6 +253,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         });
       }
     } catch {
+      this.loading = false;
     }
   }
 
