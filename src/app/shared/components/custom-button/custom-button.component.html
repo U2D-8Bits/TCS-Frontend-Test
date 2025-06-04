@@ -1,8 +1,8 @@
-<button [type]="type" class="custom-btn"
+<button [type]="type" class="custom-btn" [ngClass]="{ 'skeleton skeleton-btn': loading }"
         [style.color]="textColor"
         [style.background]="backgroundColor"
-        [disabled]="disabled"
+        [disabled]="disabled || loading"
         (mouseenter)="hover = true"
         (mouseleave)="hover = false">
-  {{ Texto }}
+  <ng-container *ngIf="!loading">{{ Texto }}</ng-container>
 </button>

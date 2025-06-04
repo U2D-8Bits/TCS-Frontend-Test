@@ -1,12 +1,13 @@
 // Importaciones de Angular y dependencias
 import { Component, OnInit, Input } from '@angular/core';
+import { NgIf, NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-custom-button',
   templateUrl: './custom-button.component.html',
   styleUrls: ['./custom-button.component.css'],
   standalone: true,
-  imports: []
+  imports: [NgIf, NgClass],
 })
 export class CustomButtonComponent implements OnInit {
   // ================= Inputs =================
@@ -16,6 +17,7 @@ export class CustomButtonComponent implements OnInit {
   @Input() ColorHoover: string = '#0056b3'; // acepta hex
   @Input() disabled: boolean = false;
   @Input() type: 'button' | 'submit' | 'reset' = 'button'; // Tipo de botón
+  @Input() loading: boolean = false;
 
   // ================= Propiedades públicas =================
   hover = false;
@@ -35,6 +37,6 @@ export class CustomButtonComponent implements OnInit {
   }
 
   // ================= Constructor y ciclo de vida =================
-  constructor() { }
-  ngOnInit() { }
+  constructor() {}
+  ngOnInit() {}
 }
