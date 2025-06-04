@@ -24,6 +24,7 @@ export class CustomInputComponent implements OnInit, ControlValueAccessor {
   @Input() errorMessage: string = '';
   @Input() type: string = 'text';
   @Input() showError: boolean = false;
+  @Input() loading: boolean = false;
 
   // ================= Propiedades públicas =================
   value: string = '';

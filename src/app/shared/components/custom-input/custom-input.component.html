@@ -4,16 +4,16 @@
     <input
       [type]="type"
       class="custom-input"
+      [ngClass]="{ 'has-error': showError, 'skeleton skeleton-input': loading }"
       [placeholder]="placeholder"
       [value]="value"
-      [attr.disabled]="disabled ? true : null"
+      [attr.disabled]="disabled || loading ? true : null"
       (input)="handleInput($event)"
       (blur)="handleBlur()"
-      [ngClass]="{ 'has-error': showError }"
       autocomplete="off"
     />
   </div>
-  <div class="custom-input-error" *ngIf="showError">
+  <div class="custom-input-error" *ngIf="showError && !loading">
     {{ errorMessage }}
   </div>
 </div>
