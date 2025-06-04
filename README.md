@@ -1,59 +1,69 @@
 # TcsApp
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.12.
+Este proyecto es una aplicación Angular para la gestión de productos financieros. Permite listar, buscar, agregar, editar y eliminar productos, utilizando una arquitectura modular y componentes reutilizables.
 
-## Development server
+## Estructura del Proyecto
 
-To start a local development server, run:
+- **src/app/core**: Modelos y servicios principales (por ejemplo, `ProductService` y el modelo `Product`).
+- **src/app/features**: Funcionalidades principales de la app. Actualmente incluye:
+  - **product**: Componente principal para la gestión de productos (`ProductComponent`).
+- **src/app/shared**: Componentes reutilizables y servicios auxiliares:
+  - **components**: Botones, formularios, inputs personalizados y modales.
+  - **services**: Servicio de modales para notificaciones y confirmaciones.
+
+## Funcionalidades principales
+
+- **Listado de productos**: Visualización paginada y búsqueda por nombre.
+- **Agregar producto**: Formulario con validaciones (ID único, fechas, etc.).
+- **Editar producto**: Modificación de datos existentes.
+- **Eliminar producto**: Confirmación mediante modal.
+- **Componentes personalizados**: Inputs, botones, formularios y modales reutilizables.
+- **Feedback visual**: Skeletons de carga y notificaciones.
+
+## Desarrollo y pruebas
+
+### Servidor de desarrollo
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Abre `http://localhost:4200/` en tu navegador. La app recargará automáticamente al guardar cambios.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+### Construcción
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Los artefactos se generan en la carpeta `dist/`.
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### Pruebas unitarias
 
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
+### Estructura de carpetas relevante
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
+```
+src/
+  app/
+    core/
+      models/           # Modelos de datos (Product, etc)
+      services/         # Servicios (ProductService)
+    features/
+      product/          # Componente principal de productos
+    shared/
+      components/       # Botones, formularios, inputs, modales
+      services/         # Servicio de modal
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Notas adicionales
 
-## Additional Resources
+- El proyecto utiliza Angular Standalone Components.
+- El formulario de productos incluye validaciones asincrónicas y reglas de negocio (fechas, unicidad de ID, etc).
+- El servicio de productos (`ProductService`) centraliza la comunicación con la API.
+- El servicio de modal (`ModalService`) gestiona confirmaciones, alertas y notificaciones tipo toast.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Para más información sobre Angular CLI, visita la [documentación oficial](https://angular.dev/tools/cli).
