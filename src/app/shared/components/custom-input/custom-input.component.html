@@ -1,0 +1,19 @@
+<div class="custom-input-group">
+  <label *ngIf="label" class="custom-input-label">{{ label }}</label>
+  <div class="custom-input-wrapper">
+    <input
+      [type]="type"
+      class="custom-input"
+      [ngClass]="{ 'has-error': showError, 'skeleton skeleton-input': loading }"
+      [placeholder]="placeholder"
+      [value]="value"
+      [attr.disabled]="disabled || loading ? true : null"
+      (input)="handleInput($event)"
+      (blur)="handleBlur()"
+      autocomplete="off"
+    />
+  </div>
+  <div class="custom-input-error" *ngIf="showError && !loading">
+    {{ errorMessage }}
+  </div>
+</div>

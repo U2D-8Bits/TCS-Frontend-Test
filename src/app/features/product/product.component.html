@@ -1,3 +1,240 @@
-<p>
-  product works!
-</p>
+<div class="product-container">
+
+  <!-- Encabezado de la Tabla (HeaderTable) -->
+  <div class="header-table">
+    <div class="header-table-title">
+      <span class="material-symbols-outlined">payments</span>
+      <div>
+        <h2 *ngIf="!showEditForm && !showAddForm">Productos Financieros</h2>
+        <h2 *ngIf="showAddForm">Agregar Nuevo Producto</h2>
+        <h2 *ngIf="showEditForm && editingProduct">Editar: {{ editingProduct.name }}</h2>
+        <p class="header-table-desc" *ngIf="!showEditForm && !showAddForm">Listado de productos registrados en el
+          sistema</p>
+        <p class="header-table-desc" *ngIf="showAddForm">Completa los datos para crear un nuevo producto financiero</p>
+        <p class="header-table-desc" *ngIf="showEditForm">Modificar información del producto seleccionado</p>
+      </div>
+    </div>
+    
+    <!-- Botón Cancelar para formularios -->
+    <div class="header-cancel-button" *ngIf="showAddForm || showEditForm">
+      <app-custom-button 
+        [colorBoton]="'#dc3545'"
+        [ColorHoover]="'#c82333'"
+        [colorTexto]="'#fff'"
+        [Texto]="'Cancelar'"
+        (click)="showAddForm ? onHideAddForm() : onHideEditForm()"
+      />
+    </div>
+  </div>
+
+
+
+  <!-- Contenedor de Tabla -->
+  <div class="product-table-container">
+    <!-- Menu de Acciones -->
+    <div class="product-actions-row" *ngIf="!showAddForm && !showEditForm">
+
+      <div class="search-input-container">
+        <!-- Input de Busqueda de Producto -->
+        <app-custom-input *ngIf="!loading; else skeletonInput" type="text" placeholder="Buscar productos por nombre..." [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchTermChange($event)">
+        </app-custom-input>
+        <ng-template #skeletonInput>
+          <div class="skeleton skeleton-input" style="width:100%;height:40px;"></div>
+        </ng-template>
+        <!-- Botón para limpiar búsqueda -->
+        <ng-container *ngIf="searchTerm">
+          <app-custom-button *ngIf="!loading; else skeletonBtn" [Texto]="'Limpiar'" [colorBoton]="'#6c757d'" [ColorHoover]="'#5a6268'"
+            [colorTexto]="'#fff'" (click)="clearSearch()" style="margin-left: 8px;">
+          </app-custom-button>
+          <ng-template #skeletonBtn>
+            <div class="skeleton skeleton-btn" style="margin-left:8px;"></div>
+          </ng-template>
+        </ng-container>
+      </div>
+      <!-- Botón Agregar -->
+      <div class="add-button-container">
+        <app-custom-button *ngIf="!loading; else skeletonBtn2" [Texto]="'Agregar'" [colorBoton]="'#FFD600'" [ColorHoover]="'#FFEA00'" [colorTexto]="'#222'"
+          (click)="onShowAddForm()">
+        </app-custom-button>
+        <ng-template #skeletonBtn2>
+          <div class="skeleton skeleton-btn"></div>
+        </ng-template>
+      </div>
+    </div>
+
+
+
+    <!-- Tabla de productos o formulario -->
+    <div class="product-table-content" (click)="closeDropdown()">
+      <!-- Formulario de agregar producto -->
+      <app-custom-form *ngIf="showAddForm" [mode]="'add'" (formSubmit)="onAddProduct($event)"
+        (formCancel)="onHideAddForm()"></app-custom-form>
+
+      <!-- Formulario de editar producto -->
+      <app-custom-form *ngIf="showEditForm && editingProduct" [mode]="'edit'" [initialData]="editingProduct"
+        (formSubmit)="onEditProductSubmit($event)" (formCancel)="onHideEditForm()"></app-custom-form>
+
+      <ng-container *ngIf="!showAddForm && !showEditForm">
+        <!-- Skeleton tabla -->
+        <div *ngIf="loading">
+          <div class="skeleton skeleton-header"></div>
+          <div class="skeleton skeleton-desc"></div>
+          <div class="table-scroll-x">
+            <table>
+              <thead>
+                <tr>
+                  <th *ngFor="let h of [1,2,3,4,5,6]">
+                    <div class="skeleton skeleton-table-cell" style="height:24px;"></div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let i of [1,2,3,4,5]" class="skeleton-table-row">
+                  <td class="skeleton-table-cell"><div class="skeleton skeleton-logo"></div></td>
+                  <td class="skeleton-table-cell"><div class="skeleton" style="width:80px;height:18px;"></div></td>
+                  <td class="skeleton-table-cell"><div class="skeleton" style="width:120px;height:18px;"></div></td>
+                  <td class="skeleton-table-cell"><div class="skeleton" style="width:60px;height:18px;"></div></td>
+                  <td class="skeleton-table-cell"><div class="skeleton" style="width:60px;height:18px;"></div></td>
+                  <td class="skeleton-table-cell">
+                    <div *ngIf="loading" class="skeleton skeleton-btn"></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="product-table-footer">
+            <div class="footer-info"><div class="skeleton skeleton-empty"></div></div>
+            <div class="pagination-controls">
+              <div class="skeleton skeleton-pagination"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vista vacía si no hay productos -->
+        <div *ngIf="filteredProducts.length === 0 && !searchTerm" class="empty-products-view">
+          <div class="empty-icon">📦</div>
+          <div class="empty-title">No hay productos registrados</div>
+          <div class="empty-desc">Agrega un producto financiero para comenzar.</div>
+        </div>
+
+        <!-- Vista de búsqueda sin resultados -->
+        <div *ngIf="filteredProducts.length === 0 && searchTerm" class="empty-products-view">
+          <div class="empty-icon">🔍</div>
+          <div class="empty-title">No se encontraron productos</div>
+          <div class="empty-desc">No hay productos que coincidan con "{{ searchTerm }}". Intenta con otro término de
+            búsqueda.</div>
+        </div>
+        <!-- Tabla -->
+        <div class="table-scroll-x" *ngIf="filteredProducts.length > 0">
+          <table>
+            <thead>
+              <tr>
+                <th>Logo</th>
+                <th>Nombre del Producto</th>
+                <th>
+                  Descripción
+                  <span class="material-symbols-outlined">
+                    info
+                  </span>
+                </th>
+                <th>
+                  Fecha de liberación
+                  <span class="material-symbols-outlined">
+                    info
+                  </span>
+                </th>
+                <th>
+                  Fecha de reestructuración
+                  <span class="material-symbols-outlined">
+                    info
+                  </span>
+                </th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of displayedProducts">
+                <td>
+                  <ng-container *ngIf="product.logo && !imageErrorIds.has(product.id); else showInitials">
+                    <img [src]="product.logo" alt="Logo {{product.name}}" class="logo"
+                         (error)="onImageError(product.id)" />
+                  </ng-container>
+                  <ng-template #showInitials>
+                    <div class="logo logo-fallback">{{ getInitials(product.name) }}</div>
+                  </ng-template>
+                </td>
+                <td class="product-name">{{ product.name }}</td>
+                <td class="product-description">{{ product.description }}</td>
+                <td>{{ product.date_release | date:'dd-MM-yyyy' }}</td>
+                <td>{{ product.date_revision | date:'dd-MM-yyyy' }}</td>
+                <td class="actions">
+                  <div class="actions-dropdown">
+                    <span class="material-symbols-outlined actions-trigger" (click)="toggleDropdown(product.id, $event)">
+                      more_vert
+                    </span>
+                    <div class="dropdown-menu" *ngIf="openDropdownId === product.id" [style.top]="dropdownPosition.top"
+                      [style.left]="dropdownPosition.left">
+                      <div class="dropdown-item" (click)="onEditProduct(product, $event)">
+                        <span class="material-symbols-outlined">edit</span>
+                        Editar
+                      </div>
+                      <div class="dropdown-item" (click)="onDeleteProduct(product, $event)">
+                        <span class="material-symbols-outlined">delete</span>
+                        Eliminar
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Seccion Footer de la Tabla -->
+        <div class="product-table-footer" *ngIf="filteredProducts.length > 0">
+          <!-- Contador de productos en Tabla -->
+          <div class="footer-info">
+            <span *ngIf="!searchTerm">
+              Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} a
+              {{ Math.min(currentPage * itemsPerPage, filteredProducts.length) }}
+              de {{ filteredProducts.length }} resultados
+            </span>
+            <span *ngIf="searchTerm">
+              Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} a
+              {{ Math.min(currentPage * itemsPerPage, filteredProducts.length) }}
+              de {{ filteredProducts.length }} resultados para "{{ searchTerm }}"
+            </span>
+          </div>
+
+          <!-- Controles de paginación -->
+          <div class="pagination-controls" *ngIf="totalPages > 1">
+            <button class="pagination-btn" [disabled]="currentPage === 1" (click)="goToPreviousPage()">
+              ‹ Anterior
+            </button>
+
+            <span class="page-info">
+              Página {{ currentPage }} de {{ totalPages }}
+            </span>
+
+            <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="goToNextPage()">
+              Siguiente ›
+            </button>
+          </div>
+
+          <!-- Select para escoger la cantidad de productos a mostrar (5, 10, 20) -->
+          <div class="items-per-page">
+            <label for="itemsPerPage">Mostrar:</label>
+            <select id="itemsPerPage" class="custom-select" [value]="itemsPerPage"
+              (change)="onItemsPerPageChange($event)">
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+            </select>
+            <span>por página</span>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+
+  </div>

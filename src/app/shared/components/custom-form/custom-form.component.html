@@ -1,0 +1,65 @@
+<div class="container-body" [class.loading]="loading">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
+    <!-- Skeleton header -->
+    <div *ngIf="loading">
+      <div class="skeleton skeleton-form-header"></div>
+      <div class="skeleton skeleton-form-input" style="width:100%;"></div>
+      <div class="skeleton skeleton-form-input" style="width:100%;"></div>
+      <div class="skeleton skeleton-form-input" style="width:100%;"></div>
+      <div class="skeleton skeleton-form-input" style="width:100%;"></div>
+      <div class="skeleton skeleton-form-input" style="width:100%;"></div>
+      <div class="skeleton skeleton-form-input" style="width:100%;"></div>
+      <div class="form-buttons">
+        <div class="skeleton skeleton-form-btn"></div>
+        <div class="skeleton skeleton-form-btn"></div>
+      </div>
+    </div>
+    <!-- Contenido del formulario real -->
+    <div class="form-content" *ngIf="!loading">
+
+      <div class="form-group">
+        <app-custom-input [label]="'ID'" [placeholder]="'ID del Producto'" [type]="'text'" formControlName="id"
+          [showError]="!!getError('id')" [errorMessage]="getError('id') || ''" />
+      </div>
+
+      <div class="form-group">
+        <app-custom-input [label]="'Nombre'" [placeholder]="'Nombre del Producto'" [type]="'text'"
+          formControlName="name" [showError]="!!getError('name')" [errorMessage]="getError('name') || ''" />
+      </div>
+
+      <div class="form-group">
+        <app-custom-input [label]="'Descripción'" [placeholder]="'Descripción del Producto'" [type]="'text'"
+          formControlName="description" [showError]="!!getError('description')"
+          [errorMessage]="getError('description') || ''" />
+      </div>
+
+      <div class="form-group">
+        <app-custom-input [label]="'Logo'" [placeholder]="'Logo del Producto'" [type]="'text'" formControlName="logo"
+          [showError]="!!getError('logo')" [errorMessage]="getError('logo') || ''" />
+      </div>
+
+      <div class="form-group">
+        <app-custom-input [label]="'Fecha Liberación'" [placeholder]="'Fecha de Liberación del Producto'"
+          [type]="'date'" formControlName="date_release" [showError]="!!getError('date_release')"
+          [errorMessage]="getError('date_release') || ''" />
+      </div>
+
+      <div class="form-group">
+        <app-custom-input [label]="'Fecha de Revisión'" [placeholder]="'Fecha de Revisión del Producto'" [type]="'date'"
+          formControlName="date_revision" [showError]="!!getError('date_revision')"
+          [errorMessage]="getError('date_revision') || ''" />
+      </div>
+    </div> <!-- Botones -->
+    <div class="form-buttons" *ngIf="!loading">
+
+      <app-custom-button [colorBoton]="'#6c757d'" [ColorHoover]="'#5a6268'" [colorTexto]="'#fff'" [Texto]="'Reiniciar'"
+        [disabled]="loading" [type]="'button'" (click)="onReset()" />
+
+      <app-custom-button [colorBoton]="'#FFDD00'" [ColorHoover]="'#FFDD00'" [colorTexto]="'#0F265C'"
+        [Texto]="mode === 'add' ? 'Agregar' : 'Actualizar'" [disabled]="loading || form.invalid" [type]="'submit'"
+        (click)="onSubmit()" />
+    </div>
+
+    <div *ngIf="errorMsg && !loading" class="error-message" style="text-align:center; margin-top:12px;">{{ errorMsg }}</div>
+  </form>
+</div>

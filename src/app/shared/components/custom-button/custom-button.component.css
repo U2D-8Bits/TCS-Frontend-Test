@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+.custom-btn {
+  font-family: 'prelo-semibold', 'Poppins', Arial, sans-serif;
+  width: max-content;
+  height: 40px;
+  font-size: 14px;
+  line-height: 24px;
+  padding: 8px 24px;
+  border: none;
+  border-radius: 0.5em;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  outline: none;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.custom-btn:disabled,
+.custom-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  box-shadow: none;
+}
+
+@media (max-width: 600px) {
+  .custom-btn {
+    font-size: 0.95rem;
+    padding: 0.6em 1.2em;
+  }
+}
+
+@media (max-width: 400px) {
+  .custom-btn {
+    font-size: 0.85rem;
+    padding: 0.5em 0.8em;
+  }
+}
+
+/* SKELETON LOADER UNIVERSAL */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 37%, #f0f0f0 63%);
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.2s ease-in-out infinite;
+  border-radius: 6px;
+  min-height: 1em;
+  color: transparent !important;
+  pointer-events: none;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+.skeleton-btn {
+  width: 100px;
+  height: 40px;
+  border-radius: 8px;
+  margin: 0 auto;
+}
