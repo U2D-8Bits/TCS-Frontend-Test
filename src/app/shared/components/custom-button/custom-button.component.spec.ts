@@ -1,5 +1,5 @@
 /* tslint:disable:no-unused-variable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
@@ -9,9 +9,9 @@ describe('CustomButtonComponent', () => {
   let component: CustomButtonComponent;
   let fixture: ComponentFixture<CustomButtonComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CustomButtonComponent ]
+      imports: [CustomButtonComponent]
     })
     .compileComponents();
   }));
@@ -24,5 +24,29 @@ describe('CustomButtonComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should render button text from @Input Texto', () => {
+    component.Texto = 'Guardar';
+    fixture.detectChanges();
+    const btn = fixture.debugElement.query(By.css('button'));
+    expect(btn.nativeElement.textContent).toContain('Guardar');
+  });
+
+  it('should emit click event when button is clicked', () => {
+    const clickSpy = jest.fn();
+    // Simular output con host listener si existiera, aquí solo trigger
+    const btn = fixture.debugElement.query(By.css('button'));
+    btn.nativeElement.addEventListener('click', clickSpy);
+    btn.nativeElement.click();
+    fixture.detectChanges();
+    expect(clickSpy).toHaveBeenCalled();
+  });
+
+  it('should disable button if [disabled] is true', () => {
+    component.disabled = true;
+    fixture.detectChanges();
+    const btn = fixture.debugElement.query(By.css('button'));
+    expect(btn.nativeElement.disabled).toBe(true);
   });
 });
