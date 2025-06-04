@@ -1,8 +1,21 @@
 <div class="container-body" [class.loading]="loading">
-
   <form [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
-    <!-- Contenido del formulario -->
-    <div class="form-content">
+    <!-- Skeleton header -->
+    <div *ngIf="loading">
+      <div class="skeleton skeleton-form-header"></div>
+      <div class="skeleton skeleton-form-input" style="width:100%;"></div>
+      <div class="skeleton skeleton-form-input" style="width:100%;"></div>
+      <div class="skeleton skeleton-form-input" style="width:100%;"></div>
+      <div class="skeleton skeleton-form-input" style="width:100%;"></div>
+      <div class="skeleton skeleton-form-input" style="width:100%;"></div>
+      <div class="skeleton skeleton-form-input" style="width:100%;"></div>
+      <div class="form-buttons">
+        <div class="skeleton skeleton-form-btn"></div>
+        <div class="skeleton skeleton-form-btn"></div>
+      </div>
+    </div>
+    <!-- Contenido del formulario real -->
+    <div class="form-content" *ngIf="!loading">
 
       <div class="form-group">
         <app-custom-input [label]="'ID'" [placeholder]="'ID del Producto'" [type]="'text'" formControlName="id"
@@ -37,7 +50,7 @@
           [errorMessage]="getError('date_revision') || ''" />
       </div>
     </div> <!-- Botones -->
-    <div class="form-buttons">
+    <div class="form-buttons" *ngIf="!loading">
 
       <app-custom-button [colorBoton]="'#6c757d'" [ColorHoover]="'#5a6268'" [colorTexto]="'#fff'" [Texto]="'Reiniciar'"
         [disabled]="loading" [type]="'button'" (click)="onReset()" />
@@ -47,8 +60,6 @@
         (click)="onSubmit()" />
     </div>
 
-    <div *ngIf="errorMsg" class="error-message" style="text-align:center; margin-top:12px;">{{ errorMsg }}</div>
-
+    <div *ngIf="errorMsg && !loading" class="error-message" style="text-align:center; margin-top:12px;">{{ errorMsg }}</div>
   </form>
-
 </div>
